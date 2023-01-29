@@ -1,0 +1,24 @@
+{
+  "name": "octacoin",
+  "version": "1.0.0",
+  "description": "Octacoin peer-to-peer blockchain",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll"
+  },
+  "keywords": [
+    "blockchain",
+    "cryptocurrency",
+    "crypto",
+    "octacoin",
+    "peer-to-peer",
+    "p2p"
+  ],
+  "author": "Tatum Roaquin",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@babel/preset-env": "^7.20.2",
+    "jest": "^29.4.1"
+  }
+}
