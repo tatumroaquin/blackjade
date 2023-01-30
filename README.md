@@ -1,7 +1,9 @@
 <div align='center'>
-<h1>Blackjade</h1>
-<h5>29/01/2023</h5>
+  <h1>Blackjade</h1>
+  <h5>29/01/2023</h5>
 
-<h3>Description</h3>
+  <img src="images/logo.png" alt="blackjade logo" width=200 height=200 />
+
+  <h3>Description</h3>
+  Blackjade is a peer-to-peer blockchain built from scratch using full-stack JavaScript technologies.
 </div>
-Blackjade is a blockchain with peer-to-peer capabilities and built from scratch using established JavaScript technologies in the frontend and the backend.
