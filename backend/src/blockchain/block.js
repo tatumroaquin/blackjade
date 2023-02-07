@@ -1,5 +1,6 @@
 import { GENESIS_DATA, MINING_RATE } from '../../config.js';
 import sha256 from '../utility/sha256.js';
+import hexToBin from '../utility/hex-to-bin.js';
 
 export default class Block {
   constructor({ timestamp, prevHash, hash, nonce, difficulty, data }) {
@@ -25,7 +26,7 @@ export default class Block {
       timestamp = Date.now();
       difficulty = Block.adjustDifficulty({ prevBlock, timestamp });
       hash = sha256(timestamp, prevHash, difficulty, nonce, data);
-    } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty));
+    } while (hexToBin(hash).substring(0, difficulty) !== '0'.repeat(difficulty));
 
     return new this({ timestamp, prevHash, hash, nonce, difficulty, data });
   }
