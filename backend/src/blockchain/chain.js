@@ -25,6 +25,9 @@ export default class Blockchain {
       if (prevBlock.hash !== prevHash)
         return false;
 
+      if (Math.abs(prevBlock.difficulty - currBlock.difficulty) > 1)
+        return false;
+
       let realHash = sha256(timestamp, prevHash, nonce, difficulty, data);
 
       if (realHash !== hash) 
