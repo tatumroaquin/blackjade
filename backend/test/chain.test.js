@@ -59,11 +59,19 @@ describe('Blockchain', () => {
       });
     });
 
+    describe('the chain has a jumped difficulty', () => {
+      it('returns false', () => {
+        blockchain.chain[2].difficulty++;
+        expect(Blockchain.isValidChain(blockchain.chain)).toBe(false);
+      });
+    });
+
     describe('the chain is completely valid', () => {
       it('returns true', () => {
         expect(Blockchain.isValidChain(blockchain.chain)).toBe(true);
       });
     });
+
   });
 
   describe('replaceChain()', () => {
@@ -96,7 +104,7 @@ describe('Blockchain', () => {
 
       describe('and the chain is invalid', () => {
         it('retains the current `chain` instance', () => {
-          blockchain.chain[1].data = 'EVIL DATA';
+          newChain.chain[1].data = 'EVIL DATA';
           blockchain.replaceChain({ chain: newChain.chain });
           expect(blockchain.chain).not.toEqual(newChain.chain);
         });
