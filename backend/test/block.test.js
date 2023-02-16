@@ -1,6 +1,7 @@
 import Block from '../src/blockchain/block.js';
 import { GENESIS_DATA } from '../config.js';
 import sha256 from '../src/utility/sha256.js';
+import hexToBin from '../src/utility/hex-to-bin.js';
 
 describe('Block', () => {
   // GENESIS BLOCK
@@ -26,7 +27,7 @@ describe('Block', () => {
       expect(minedBlock.prevHash).toEqual(prevBlock.hash);
     });
     it('has a `hash` prefix matching the `difficulty`', () => {
-      expect(minedBlock.hash.substring(0, minedBlock.difficulty)).toEqual(
+      expect(hexToBin(minedBlock.hash).substring(0, minedBlock.difficulty)).toEqual(
         '0'.repeat(minedBlock.difficulty)
       );
     });
