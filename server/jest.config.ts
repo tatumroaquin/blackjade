@@ -1,5 +1,7 @@
 export default {
   coverageProvider: 'v8',
-  preset: 'ts-jest/presents/default-esm',
-  transform: {},
+  preset: 'ts-jest',
+  moduleNameMapper: {
+    '(.+)\\.js': '$1',
+  },
 };
