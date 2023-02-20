@@ -1,10 +1,10 @@
 import { createHash } from 'crypto';
 
-export default function sha256(...args) {
+export default function sha256(...args: any) {
   const SHA256 = createHash('sha256');
   SHA256.update(
     args
-      .map((arg) => JSON.stringify(arg))
+      .map((arg: any) => JSON.stringify(arg))
       .sort()
       .join(' ')
   );
