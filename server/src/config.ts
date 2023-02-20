@@ -1,8 +1,8 @@
 import { PubnubConfig } from 'pubnub';
 import { v4 as uuid } from 'uuid';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'
 
-dotenv.config({ path: '../.env' })
+dotenv.config()
 
 const DIFFICULTY = 3;
 
@@ -17,10 +17,12 @@ const GENESIS_DATA = {
   difficulty: DIFFICULTY,
 };
 
+const NODE_ID: string = uuid();
+
 const PUBNUB_KEYS: PubnubConfig = {
   publishKey: process.env.PUBNUB_PUBLISH_KEY,
   subscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY!,
-  userId: uuid()
+  userId: NODE_ID
 };
 
-export { GENESIS_DATA, DIFFICULTY, MINING_RATE, PUBNUB_KEYS };
+export { GENESIS_DATA, DIFFICULTY, MINING_RATE, PUBNUB_KEYS, NODE_ID };
