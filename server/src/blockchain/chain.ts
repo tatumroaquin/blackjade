@@ -37,7 +37,7 @@ export default class Blockchain {
     return true;
   }
 
-  replaceChain({ chain }: { chain: Block[] }) {
+  replaceChain(chain: Block[]) {
     if (this.chain.length >= chain.length) {
       console.error('incoming chain must be longer');
       return;
