@@ -6,11 +6,7 @@ import {
   createPrivateKey,
 } from 'crypto';
 import SHA256 from '../utility/sha256.js';
-
-type HexKeyPair = {
-  publicKey: string;
-  privateKey: string;
-};
+import { HexKeyPair, VerifyParams } from './keypair.d.js';
 
 export default class KeyPair {
   publicKey: Buffer;
@@ -142,14 +138,37 @@ export default class KeyPair {
     return signature.toString('hex');
   }
 
-  verify(data: any, signature: string): boolean {
+  verify({ publicKey, data, signature }: VerifyParams): boolean {
     const hashedData = SHA256(data);
-    return verify(
-      this.signAlgorithm,
-      Buffer.from(hashedData, 'hex'),
-      { key: this.publicKey, type: 'spki', format: 'der' },
-      Buffer.from(signature, 'hex')
-    );
+
+    switch (publicKey?.constructor.name) {
+      case 'String':
+        return verify(
+          this.signAlgorithm,
+          Buffer.from(hashedData, 'hex'),
+          {
+            key: publicKey,
+            type: 'spki',
+            format: 'der',
+            encoding: 'hex',
+          },
+          Buffer.from(signature, 'hex')
+        );
+      case 'Buffer':
+        return verify(
+          this.signAlgorithm,
+          Buffer.from(hashedData, 'hex'),
+          { key: publicKey, type: 'spki', format: 'der' },
+          Buffer.from(signature, 'hex')
+        );
+      default:
+        return verify(
+          this.signAlgorithm,
+          Buffer.from(hashedData, 'hex'),
+          { key: this.publicKey, type: 'spki', format: 'der' },
+          Buffer.from(signature, 'hex')
+        );
+    }
   }
 
   import({ publicKey, privateKey }: HexKeyPair) {
