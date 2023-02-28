@@ -1,5 +1,6 @@
 import { INITIAL_BALANCE } from '../config.js';
 import KeyPair from './keypair.js';
+import { HexKeyPair, SelfVerifyParams } from './keypair.d.js';
 
 export default class Wallet {
   keypair: KeyPair;
@@ -12,5 +13,17 @@ export default class Wallet {
     this.publicKey = this.keypair.getPublicKey();
     this.privateKey = this.keypair.getPrivateKey();
     this.balance = INITIAL_BALANCE;
+  }
+
+  sign(data: any): string {
+    return this.keypair.sign(data);
+  }
+
+  verify({ data, signature }: SelfVerifyParams): boolean {
+    return this.keypair.verify({ data, signature });
+  }
+
+  import({ publicKey, privateKey}: HexKeyPair) {
+    this.keypair.import({ publicKey, privateKey });
   }
 }
