@@ -48,17 +48,50 @@ describe('KeyPair', () => {
   });
 
   describe('verify()', () => {
-    it('returns true when signature is valid', () => {
-      const data = 'SIGN DATA';
-      const signature = kp.sign('SIGN DATA');
-      expect(kp.verify(data, signature)).toBe(true);
+    let data: string, signature: string;
+    beforeEach(() => {
+      data = 'SIGN DATA';
+      signature = kp.sign(data);
     });
-    it('returns false when signature is NOT valid', () => {
-      const data = 'SIGN DATA';
-      let signature = kp.sign('SIGN DATA');
-      signature = signature.replace(/[0-9]/g, '2');
-      signature = signature.replace(/[a-f]/g, '9');
-      expect(kp.verify(data, signature)).toBe(false);
+    describe('check verification WITHOUT `publicKey` parameter', () => {
+      it('returns true when signature is valid', () => {
+        expect(kp.verify({ data, signature })).toBe(true);
+      });
+      it('returns false when signature is NOT valid', () => {
+        signature = signature.replace(/[0-9]/g, '2');
+        signature = signature.replace(/[a-f]/g, '9');
+        expect(kp.verify({ data, signature })).toBe(false);
+      });
+    });
+    describe('check verification WITH `publicKey` parameter', () => {
+      describe('and `publicKey` is a string', () => {
+        let publicKey: string;
+        beforeEach(() => {
+          publicKey = kp.getPublicKey();
+        });
+        it('returns true when signature is valid', () => {
+          expect(kp.verify({ publicKey, data, signature })).toBe(true);
+        });
+        it('returns false when signature is NOT valid', () => {
+          signature = signature.replace(/[0-9]/g, '2');
+          signature = signature.replace(/[a-f]/g, '9');
+          expect(kp.verify({ publicKey, data, signature })).toBe(false);
+        });
+      });
+      describe('and `publicKey` is a buffer', () => {
+        let publicKey: Buffer;
+        beforeEach(() => {
+          publicKey = kp.publicKey;
+        });
+        it('returns true when signature is valid', () => {
+          expect(kp.verify({ publicKey, data, signature })).toBe(true);
+        });
+        it('returns false when signature is NOT valid', () => {
+          signature = signature.replace(/[0-9]/g, '2');
+          signature = signature.replace(/[a-f]/g, '9');
+          expect(kp.verify({ publicKey, data, signature })).toBe(false);
+        });
+      });
     });
   });
 
