@@ -1,7 +1,7 @@
 import Wallet from '../wallet/wallet.js';
 
 export type Input = {
-  balance: number;
+  amount: number;
   timestamp: number;
   wallet: string;
   signature: string;
@@ -26,6 +26,6 @@ export type TransactionParams = {
   senderWallet: Wallet;
   receiverWallet: Wallet;
   amount: number;
-  input: Input;
-  output: Output;
+  input?: Input;
+  output?: Output;
 };

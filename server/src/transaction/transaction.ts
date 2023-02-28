@@ -6,6 +6,7 @@ import {
   OutputParams,
   TransactionParams,
 } from './transaction.d.js';
+import KeyPair from '../wallet/keypair.js';
 
 export default class Transaction {
   id: string;
@@ -37,8 +38,34 @@ export default class Transaction {
     return {
       timestamp: Date.now(),
       wallet: senderWallet.keypair.getPublicKey(),
-      balance: senderWallet.balance,
+      amount: senderWallet.balance,
       signature: senderWallet.keypair.sign(output),
     };
+  }
+
+  static isValidTransaction(transaction: Transaction): boolean {
+    const { input, output } = transaction;
+
+    const totalOutput = Object.values(output).reduce(
+      (total, amount) => total + amount
+    );
+
+    if (totalOutput !== input.amount) {
+      console.error(`invalid transaction from ${input.wallet}`);
+      return false;
+    }
+
+    if (
+      !KeyPair.verify({
+        publicKey: input.wallet,
+        data: output,
+        signature: input.signature,
+      })
+    ) {
+      console.error(`invalid signature from ${input.wallet}`);
+      return false;
+    }
+
+    return true;
   }
 }
