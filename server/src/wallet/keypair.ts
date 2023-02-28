@@ -6,19 +6,15 @@ import {
   createPrivateKey,
 } from 'crypto';
 import SHA256 from '../utility/sha256.js';
-
-type HexKeyPair = {
-  publicKey: string;
-  privateKey: string;
-};
+import { HexKeyPair, SelfVerifyParams, GlobalVerifyParams } from './keypair.d.js';
 
 export default class KeyPair {
   publicKey: Buffer;
   privateKey: Buffer;
-  signAlgorithm?: string;
+  static signAlgorithm?: string;
 
   constructor(keypair: KeyPair | undefined = undefined) {
-    this.signAlgorithm = 'SHA256';
+    KeyPair.signAlgorithm = 'SHA256';
 
     if (KeyPair.isValidKeyPair(keypair)) {
       this.publicKey = keypair!.publicKey;
@@ -62,11 +58,9 @@ export default class KeyPair {
       return false;
     }
 
-    if (!KeyPair.isValidKeyBytes(publicKey, 'public'))
-      return false
+    if (!KeyPair.isValidKeyBytes(publicKey, 'public')) return false;
 
-    if (!KeyPair.isValidKeyBytes(privateKey, 'private'))
-      return false
+    if (!KeyPair.isValidKeyBytes(privateKey, 'private')) return false;
 
     return true;
   }
@@ -86,11 +80,9 @@ export default class KeyPair {
     // secp256k1 privateKey bytelength is 135
     if (keypair.privateKey.byteLength !== 135) return false;
 
-    if (!KeyPair.isValidKeyBytes(keypair.publicKey, 'public'))
-      return false
+    if (!KeyPair.isValidKeyBytes(keypair.publicKey, 'public')) return false;
 
-    if (!KeyPair.isValidKeyBytes(keypair.privateKey, 'private'))
-      return false
+    if (!KeyPair.isValidKeyBytes(keypair.privateKey, 'private')) return false;
 
     return true;
   }
@@ -134,18 +126,52 @@ export default class KeyPair {
 
   sign(data: any): string {
     const hashedData = SHA256(data);
-    const signature = sign(this.signAlgorithm, Buffer.from(hashedData, 'hex'), {
-      key: this.privateKey,
-      type: 'pkcs8',
-      format: 'der',
-    });
+    const signature = sign(
+      KeyPair.signAlgorithm,
+      Buffer.from(hashedData, 'hex'),
+      {
+        key: this.privateKey,
+        type: 'pkcs8',
+        format: 'der',
+      }
+    );
     return signature.toString('hex');
   }
 
-  verify(data: any, signature: string): boolean {
+  static verify({ publicKey, data, signature }: GlobalVerifyParams): boolean {
     const hashedData = SHA256(data);
+
+    switch (publicKey.constructor.name) {
+      case 'String':
+        return verify(
+          this.signAlgorithm,
+          Buffer.from(hashedData, 'hex'),
+          {
+            key: publicKey,
+            type: 'spki',
+            format: 'der',
+            encoding: 'hex',
+          },
+          Buffer.from(signature, 'hex')
+        );
+      case 'Buffer':
+        return verify(
+          this.signAlgorithm,
+          Buffer.from(hashedData, 'hex'),
+          { key: publicKey, type: 'spki', format: 'der' },
+          Buffer.from(signature, 'hex')
+        );
+      default:
+        console.error('you must specify a `publicKey`')
+        return false;
+    }
+  }
+
+  verify({ data, signature }: SelfVerifyParams): boolean {
+    const hashedData = SHA256(data);
+
     return verify(
-      this.signAlgorithm,
+      KeyPair.signAlgorithm,
       Buffer.from(hashedData, 'hex'),
       { key: this.publicKey, type: 'spki', format: 'der' },
       Buffer.from(signature, 'hex')
