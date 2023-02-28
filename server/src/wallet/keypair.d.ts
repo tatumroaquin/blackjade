@@ -3,8 +3,13 @@ export type HexKeyPair = {
   privateKey: string;
 };
 
-export type VerifyParams = {
-  publicKey?: Buffer | string | undefined;
+export type GlobalVerifyParams = {
+  publicKey: Buffer | string;
   data: any;
   signature: string;
-};
+}
+
+export type SelfVerifyParams = {
+  data: any;
+  signature: string;
+}

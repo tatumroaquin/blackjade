@@ -70,12 +70,12 @@ describe('KeyPair', () => {
           publicKey = kp.getPublicKey();
         });
         it('returns true when signature is valid', () => {
-          expect(kp.verify({ publicKey, data, signature })).toBe(true);
+          expect(KeyPair.verify({ publicKey, data, signature })).toBe(true);
         });
         it('returns false when signature is NOT valid', () => {
           signature = signature.replace(/[0-9]/g, '2');
           signature = signature.replace(/[a-f]/g, '9');
-          expect(kp.verify({ publicKey, data, signature })).toBe(false);
+          expect(KeyPair.verify({ publicKey, data, signature })).toBe(false);
         });
       });
       describe('and `publicKey` is a buffer', () => {
@@ -84,12 +84,12 @@ describe('KeyPair', () => {
           publicKey = kp.publicKey;
         });
         it('returns true when signature is valid', () => {
-          expect(kp.verify({ publicKey, data, signature })).toBe(true);
+          expect(KeyPair.verify({ publicKey, data, signature })).toBe(true);
         });
         it('returns false when signature is NOT valid', () => {
           signature = signature.replace(/[0-9]/g, '2');
           signature = signature.replace(/[a-f]/g, '9');
-          expect(kp.verify({ publicKey, data, signature })).toBe(false);
+          expect(KeyPair.verify({ publicKey, data, signature })).toBe(false);
         });
       });
     });
