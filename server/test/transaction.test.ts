@@ -5,11 +5,18 @@ import { Input, Output } from '../src/transaction/transaction.d.js';
 describe('Transaction', () => {
   let transaction: Transaction;
   let senderWallet: Wallet;
-  let receiverWallet: Wallet;
+  let recipientWallet: Wallet;
+  let recipientAddress: string;
+
   beforeEach(() => {
     senderWallet = new Wallet();
-    receiverWallet = new Wallet();
-    transaction = new Transaction({ senderWallet, receiverWallet, amount: 1 });
+    recipientWallet = new Wallet();
+    recipientAddress = recipientWallet.publicKey;
+    transaction = new Transaction({
+      senderWallet,
+      recipientAddress,
+      amount: 1,
+    });
   });
   describe('check tx properties', () => {
     it('has a unique id', () => {
@@ -27,11 +34,11 @@ describe('Transaction', () => {
     it('returns a valid tx output object', () => {
       const amount = 1;
       const mockOutput = {
-        [receiverWallet.keypair.getPublicKey()]: amount,
+        [recipientWallet.keypair.getPublicKey()]: amount,
         [senderWallet.keypair.getPublicKey()]: senderWallet.balance - amount,
       };
       expect(
-        transaction.createOutput({ senderWallet, receiverWallet, amount })
+        transaction.createOutput({ senderWallet, recipientAddress, amount })
       ).toEqual(mockOutput);
     });
   });
@@ -45,7 +52,7 @@ describe('Transaction', () => {
       amount = 1;
       output = transaction.createOutput({
         senderWallet,
-        receiverWallet,
+        recipientAddress,
         amount,
       });
       input = transaction.createInput({ senderWallet, output });
@@ -75,6 +82,18 @@ describe('Transaction', () => {
   });
 
   describe('isValidTransaction()', () => {
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(jest.fn());
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
+
     describe('transaction has invalid total output amount', () => {
       it('returns false', () => {
         Object.keys(transaction.output).map(
@@ -82,6 +101,7 @@ describe('Transaction', () => {
             (transaction.output[wallet] = transaction.output[wallet] + 1)
         );
         expect(Transaction.isValidTransaction(transaction)).toBe(false);
+        expect(consoleErrorSpy).toBeCalled();
       });
     });
     describe('transaction has invalid signature', () => {
@@ -90,6 +110,7 @@ describe('Transaction', () => {
         evilSignature = evilSignature.replace(/[a-f]/g, 'c');
         transaction.input.signature = evilSignature;
         expect(Transaction.isValidTransaction(transaction)).toBe(false);
+        expect(consoleErrorSpy).toBeCalled();
       });
     });
     describe('transaction is completely valid', () => {
