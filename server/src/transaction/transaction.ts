@@ -15,21 +15,21 @@ export default class Transaction {
 
   constructor({
     senderWallet,
-    receiverWallet,
+    recipientAddress,
     amount,
     input,
     output,
   }: TransactionParams) {
     this.id = uuid();
     this.output =
-      output || this.createOutput({ senderWallet, receiverWallet, amount });
+      output || this.createOutput({ senderWallet, recipientAddress, amount });
     this.input =
       input || this.createInput({ senderWallet, output: this.output });
   }
 
-  createOutput({ senderWallet, receiverWallet, amount }: OutputParams): Output {
+  createOutput({ senderWallet, recipientAddress, amount }: OutputParams): Output {
     return {
-      [receiverWallet.keypair.getPublicKey()]: amount,
+      [recipientAddress]: amount,
       [senderWallet.keypair.getPublicKey()]: senderWallet.balance - amount,
     };
   }
