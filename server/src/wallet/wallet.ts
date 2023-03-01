@@ -1,6 +1,8 @@
 import { INITIAL_BALANCE } from '../config.js';
-import KeyPair from './keypair.js';
 import { HexKeyPair, SelfVerifyParams } from './keypair.d.js';
+import { createTransactionParams } from './wallet.d.js';
+import KeyPair from './keypair.js';
+import Transaction from '../transaction/transaction.js';
 
 export default class Wallet {
   keypair: KeyPair;
@@ -15,6 +17,18 @@ export default class Wallet {
     this.balance = INITIAL_BALANCE;
   }
 
+  createTransaction({
+    recipientAddress,
+    amount,
+  }: createTransactionParams): Transaction | undefined {
+    if (amount > this.balance) {
+      console.error('Amount exceeds balance');
+      return;
+    }
+
+    return new Transaction({ senderWallet: this, recipientAddress, amount });
+  }
+
   sign(data: any): string {
     return this.keypair.sign(data);
   }
@@ -23,7 +37,7 @@ export default class Wallet {
     return this.keypair.verify({ data, signature });
   }
 
-  import({ publicKey, privateKey}: HexKeyPair) {
+  import({ publicKey, privateKey }: HexKeyPair) {
     this.keypair.import({ publicKey, privateKey });
   }
 }
