@@ -40,4 +40,12 @@ export default class Wallet {
   import({ publicKey, privateKey }: HexKeyPair) {
     this.keypair.import({ publicKey, privateKey });
   }
+
+  getPublickey() {
+    return this.publicKey;
+  }
+
+  getPrivateKey() {
+    return this.publicKey;
+  }
 }
