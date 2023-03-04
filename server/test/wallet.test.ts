@@ -123,12 +123,50 @@ describe('Wallet', () => {
         blockchain.addBlock({ data: [transaction] });
       });
 
-      it('subtracts the sum from `INITIAL_BALANCE` - tx', () => {
+      it('returns the output of most recent transaction', () => {
         const balance = Wallet.calculateBalance({
           chain: blockchain.chain,
           address: wallet.getPublicKey(),
         });
         expect(balance).toEqual(transaction!.output[wallet.getPublicKey()]);
+      });
+
+      describe('and the transaction is with two other tx objects.', () => {
+        let sameBlockTx: Transaction | undefined;
+        let nextBlockTx: Transaction | undefined;
+
+        beforeEach(() => {
+          transaction = wallet.createTransaction({
+            recipientAddress: new Wallet().getPublicKey(),
+            amount: 4,
+          });
+
+          sameBlockTx = new Wallet().createTransaction({
+            recipientAddress: wallet.getPublicKey(),
+            amount: 5,
+          });
+
+          blockchain.addBlock({ data: [transaction, sameBlockTx] });
+
+          nextBlockTx = new Wallet().createTransaction({
+            recipientAddress: wallet.getPublicKey(),
+            amount: 6,
+          });
+
+          blockchain.addBlock({ data: [nextBlockTx] });
+        });
+
+        it('returns the sum of all outputs for the wallet', () => {
+          const balance = Wallet.calculateBalance({
+            chain: blockchain.chain,
+            address: wallet.getPublicKey(),
+          });
+          expect(balance).toEqual(
+            transaction!.output[wallet.getPublicKey()] +
+              sameBlockTx!.output[wallet.getPublicKey()] +
+              nextBlockTx!.output[wallet.getPublicKey()]
+          );
+        });
       });
     });
   });
