@@ -6,9 +6,11 @@ import { INITIAL_BALANCE } from '../src/config.js';
 
 describe('Wallet', () => {
   let wallet: Wallet;
+  let blockchain: Blockchain;
 
   beforeEach(() => {
     wallet = new Wallet();
+    blockchain = new Blockchain();
   });
 
   describe('check properties', () => {
@@ -59,14 +61,29 @@ describe('Wallet', () => {
         consoleErrorSpy.mockRestore();
       });
     });
+
+    describe('and the `chain` is supplied as a parameter', () => {
+      let calculateBalanceSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        calculateBalanceSpy = jest
+          .spyOn(Wallet, 'calculateBalance')
+          .mockImplementation(jest.fn());
+      });
+
+      it('calls calculateBalance() method', () => {
+        wallet.createTransaction({
+          recipientAddress: wallet.getPublicKey(),
+          amount: 1,
+          chain: blockchain.chain,
+        });
+        expect(calculateBalanceSpy).toBeCalled();
+        calculateBalanceSpy.mockRestore();
+      });
+    });
   });
 
   describe('calculateBalance()', () => {
-    let blockchain: Blockchain;
-
-    beforeEach(() => {
-      blockchain = new Blockchain();
-    });
 
     describe('`Wallet` does NOT have outputs in the blockchain', () => {
       it('returns the `INITIAL_BALANCE`', () => {
