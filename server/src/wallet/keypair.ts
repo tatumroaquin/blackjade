@@ -38,23 +38,23 @@ export default class KeyPair {
   static isValidHexKeyPair(keypair: HexKeyPair): boolean {
     const { publicKey, privateKey } = keypair;
     if (!publicKey || !privateKey) {
-      console.log('incoming keys must not be empty');
+      console.error('incoming keys must not be empty');
       return false;
     }
 
     const isHex = new RegExp(/^[0-9a-f]+$/);
     if (!isHex.test(publicKey) || !isHex.test(privateKey)) {
-      console.log('incoming keys must be a hex string');
+      console.error('incoming keys must be a hex string');
       return false;
     }
 
     if (publicKey.length !== 88 * 2) {
-      console.log('publicKey length is NOT isValid');
+      console.error('publicKey length is NOT isValid');
       return false;
     }
 
     if (privateKey.length !== 135 * 2) {
-      console.log('privateKey length is NOT isValid');
+      console.error('privateKey length is NOT isValid');
       return false;
     }
 
@@ -109,7 +109,7 @@ export default class KeyPair {
         });
       }
     } catch (error) {
-      console.log(`this ${type} key contains the wrong bytes`);
+      console.error(`this ${type} key contains the wrong bytes`);
       return false;
     }
 
