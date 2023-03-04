@@ -29,3 +29,9 @@ export type TransactionParams = {
   input?: Input;
   output?: Output;
 };
+
+export type UpdateParams = {
+  senderWallet: Wallet;
+  recipientAddress: string;
+  amount: number;
+}

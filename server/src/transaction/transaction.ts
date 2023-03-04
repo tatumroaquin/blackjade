@@ -5,6 +5,7 @@ import {
   Output,
   OutputParams,
   TransactionParams,
+  UpdateParams,
 } from './transaction.d.js';
 import KeyPair from '../wallet/keypair.js';
 
@@ -41,6 +42,23 @@ export default class Transaction {
       amount: senderWallet.balance,
       signature: senderWallet.keypair.sign(output),
     };
+  }
+
+  update({ senderWallet, recipientAddress, amount }: UpdateParams) {
+    if (amount > this.output[senderWallet.getPublicKey()]) {
+      console.error(`Amount ${amount} exceeds balance.`);
+      return;
+    }
+
+    if (!this.output[recipientAddress]) {
+      this.output[recipientAddress] = amount;
+    } else {
+      this.output[recipientAddress] += amount;
+    }
+
+    this.output[senderWallet.getPublicKey()] -= amount;
+
+    this.input = this.createInput({ senderWallet, output: this.output })
   }
 
   static isValidTransaction(transaction: Transaction): boolean {
