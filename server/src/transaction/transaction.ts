@@ -5,6 +5,7 @@ import {
   Output,
   OutputParams,
   TransactionParams,
+  UpdateParams,
 } from './transaction.d.js';
 import KeyPair from '../wallet/keypair.js';
 
@@ -15,21 +16,21 @@ export default class Transaction {
 
   constructor({
     senderWallet,
-    receiverWallet,
+    recipientAddress,
     amount,
     input,
     output,
   }: TransactionParams) {
     this.id = uuid();
     this.output =
-      output || this.createOutput({ senderWallet, receiverWallet, amount });
+      output || this.createOutput({ senderWallet, recipientAddress, amount });
     this.input =
       input || this.createInput({ senderWallet, output: this.output });
   }
 
-  createOutput({ senderWallet, receiverWallet, amount }: OutputParams): Output {
+  createOutput({ senderWallet, recipientAddress, amount }: OutputParams): Output {
     return {
-      [receiverWallet.keypair.getPublicKey()]: amount,
+      [recipientAddress]: amount,
       [senderWallet.keypair.getPublicKey()]: senderWallet.balance - amount,
     };
   }
@@ -41,6 +42,23 @@ export default class Transaction {
       amount: senderWallet.balance,
       signature: senderWallet.keypair.sign(output),
     };
+  }
+
+  update({ senderWallet, recipientAddress, amount }: UpdateParams) {
+    if (amount > this.output[senderWallet.getPublicKey()]) {
+      console.error(`Amount ${amount} exceeds balance.`);
+      return;
+    }
+
+    if (!this.output[recipientAddress]) {
+      this.output[recipientAddress] = amount;
+    } else {
+      this.output[recipientAddress] += amount;
+    }
+
+    this.output[senderWallet.getPublicKey()] -= amount;
+
+    this.input = this.createInput({ senderWallet, output: this.output })
   }
 
   static isValidTransaction(transaction: Transaction): boolean {

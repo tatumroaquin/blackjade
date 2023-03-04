@@ -98,6 +98,7 @@ describe('KeyPair', () => {
   describe('import()', () => {
     let keypair: KeyPair = new KeyPair();
     let hexKeyPair: { publicKey: string; privateKey: string };
+    let consoleErrorSpy: jest.SpyInstance;
 
     beforeEach(() => {
       keypair = new KeyPair();
@@ -105,6 +106,15 @@ describe('KeyPair', () => {
         publicKey: kp.getPublicKey(),
         privateKey: kp.getPrivateKey(),
       };
+      consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
+    });
+
+    afterEach(() => {
+      consoleErrorSpy.mockReset();
+    });
+
+    afterAll(() => {
+      consoleErrorSpy.mockRestore();
     });
 
     describe('the keypairs are valid hex keys', () => {
@@ -123,6 +133,7 @@ describe('KeyPair', () => {
             keypair.import(hexKeyPair);
             expect(keypair.publicKey.equals(kp.publicKey)).toBe(false);
             expect(keypair.privateKey.equals(kp.privateKey)).toBe(false);
+            expect(consoleErrorSpy).toBeCalled();
           });
         });
         describe('and `privateKey` is corrupted', () => {
@@ -138,6 +149,7 @@ describe('KeyPair', () => {
             keypair.import(hexKeyPair);
             expect(keypair.publicKey.equals(kp.publicKey)).toBe(false);
             expect(keypair.privateKey.equals(kp.privateKey)).toBe(false);
+            expect(consoleErrorSpy).toBeCalled();
           });
         });
       });
@@ -151,6 +163,7 @@ describe('KeyPair', () => {
           keypair.import(hexKeyPair);
           expect(keypair.publicKey.equals(kp.publicKey)).toBe(false);
           expect(keypair.privateKey.equals(kp.privateKey)).toBe(false);
+          expect(consoleErrorSpy).toBeCalled();
         });
       });
 
@@ -161,6 +174,7 @@ describe('KeyPair', () => {
           keypair.import(hexKeyPair);
           expect(keypair.publicKey.equals(kp.publicKey)).toBe(false);
           expect(keypair.privateKey.equals(kp.privateKey)).toBe(false);
+          expect(consoleErrorSpy).toBeCalled();
         });
       });
     });

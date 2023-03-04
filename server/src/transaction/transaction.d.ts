@@ -18,14 +18,20 @@ export type Output = {
 
 export type OutputParams = {
   senderWallet: Wallet;
-  receiverWallet: Wallet;
+  recipientAddress: string;
   amount: number;
 };
 
 export type TransactionParams = {
   senderWallet: Wallet;
-  receiverWallet: Wallet;
+  recipientAddress: string;
   amount: number;
   input?: Input;
   output?: Output;
 };
+
+export type UpdateParams = {
+  senderWallet: Wallet;
+  recipientAddress: string;
+  amount: number;
+}
