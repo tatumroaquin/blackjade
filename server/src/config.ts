@@ -14,7 +14,9 @@ const GENESIS_DATA = {
   timestamp: 1674971522141,
   prevHash: 'ORIGIN',
   hash: 'GENESIS-HASH',
-  data: 'GENESIS-DATA',
+  data: [ {
+    id: 'GENESIS-TXID'
+  } ],
   nonce: 0,
   difficulty: DIFFICULTY,
 };

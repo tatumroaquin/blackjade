@@ -3,12 +3,17 @@ import fetch from 'node-fetch';
 import Block from './blockchain/block.js';
 import Blockchain from './blockchain/chain.js';
 import PubSub from './pubsub.js';
+import Wallet from './wallet/wallet.js';
+import TransactionPool from './transaction/transaction-pool.js';
 
-const app = express();
 const blockchain = new Blockchain();
 const pubsub = new PubSub({ blockchain });
 const { ROOT_NODE_ADDRESS } = process.env;
 
+const txpool = new TransactionPool();
+const wallet = new Wallet();
+
+const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -18,12 +23,45 @@ app.get('/api/blocks', (_: Request, res: Response) => {
   res.json(blockchain.chain);
 });
 
+app.get('/api/tx-pool', (_: Request, res: Response) => {
+  res.json(txpool.transactionMap);
+});
+
 app.post('/api/mine', (req: Request, res: Response) => {
   const { data } = req.body;
   blockchain.addBlock({ data });
   pubsub.broadcastChain();
   res.redirect('/api/blocks');
 });
+
+app.post('/api/transact', (req: Request, res: Response) => {
+  const { recipientAddress, amount } = req.body;
+  console.log(recipientAddress, amount)
+
+  let transaction = txpool.getExistingTransaction({
+    inputAddress: wallet.getPublicKey()
+  })
+
+  try {
+    if (transaction) {
+      transaction.update({
+        senderWallet: wallet,
+        recipientAddress,
+        amount
+      })
+    } else {
+      transaction = wallet.createTransaction({
+        recipientAddress,
+        amount
+      })
+    }
+  } catch (error: any) {
+    res.status(400)
+    res.json({ type: 'error', message: error.message})
+  }
+  txpool.addTransaction(transaction!);
+  res.json({ type: 'success', transaction })
+})
 
 async function syncBlockchains() {
   const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blocks`);
