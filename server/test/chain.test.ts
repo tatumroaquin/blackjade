@@ -77,16 +77,27 @@ describe('Blockchain', () => {
   });
 
   describe('replaceChain()', () => {
+    let consoleErrorSpy: jest.SpyInstance;
+    beforeEach(() => {
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(jest.fn());
+    });
     describe('the new chain is shorter to the current chain', () => {
       beforeEach(() => {
         blockchain.addBlock({ data: 'block1' });
         blockchain.addBlock({ data: 'block2' });
       });
 
+      afterEach(() => {
+        consoleErrorSpy.mockRestore();
+      });
+
       describe('and the chain is valid', () => {
         it('retains the current `chain` instance', () => {
-          blockchain.replaceChain({ chain: newChain.chain });
+          blockchain.replaceChain(newChain.chain);
           expect(blockchain.chain).not.toEqual(newChain.chain);
+          expect(consoleErrorSpy).toBeCalled();
         });
       });
     });
@@ -99,7 +110,7 @@ describe('Blockchain', () => {
 
       describe('and the chain is valid', () => {
         it('replaces the `chain` instance with the new chain', () => {
-          blockchain.replaceChain({ chain: newChain.chain });
+          blockchain.replaceChain(newChain.chain);
           expect(blockchain.chain).toEqual(newChain.chain);
         });
       });
@@ -107,8 +118,9 @@ describe('Blockchain', () => {
       describe('and the chain is invalid', () => {
         it('retains the current `chain` instance', () => {
           newChain.chain[1].data = 'EVIL DATA';
-          blockchain.replaceChain({ chain: newChain.chain });
+          blockchain.replaceChain(newChain.chain);
           expect(blockchain.chain).not.toEqual(newChain.chain);
+          expect(consoleErrorSpy).toBeCalled();
         });
       });
     });

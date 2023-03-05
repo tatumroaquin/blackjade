@@ -8,11 +8,15 @@ const DIFFICULTY = 3;
 
 const MINING_RATE = 1000;
 
+const INITIAL_BALANCE = 50;
+
 const GENESIS_DATA = {
   timestamp: 1674971522141,
   prevHash: 'ORIGIN',
   hash: 'GENESIS-HASH',
-  data: 'GENESIS-DATA',
+  data: [ {
+    id: 'GENESIS-TXID'
+  } ],
   nonce: 0,
   difficulty: DIFFICULTY,
 };
@@ -25,4 +29,4 @@ const PUBNUB_KEYS: PubnubConfig = {
   userId: NODE_ID
 };
 
-export { GENESIS_DATA, DIFFICULTY, MINING_RATE, PUBNUB_KEYS, NODE_ID };
+export { GENESIS_DATA, DIFFICULTY, MINING_RATE, INITIAL_BALANCE, PUBNUB_KEYS, NODE_ID };
