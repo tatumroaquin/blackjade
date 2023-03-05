@@ -34,4 +34,4 @@ export type UpdateParams = {
   senderWallet: Wallet;
   recipientAddress: string;
   amount: number;
-}
+};

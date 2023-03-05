@@ -36,32 +36,32 @@ app.post('/api/mine', (req: Request, res: Response) => {
 
 app.post('/api/transact', (req: Request, res: Response) => {
   const { recipientAddress, amount } = req.body;
-  console.log(recipientAddress, amount)
+  console.log(recipientAddress, amount);
 
   let transaction = txpool.getExistingTransaction({
-    inputAddress: wallet.getPublicKey()
-  })
+    inputAddress: wallet.getPublicKey(),
+  });
 
   try {
     if (transaction) {
       transaction.update({
         senderWallet: wallet,
         recipientAddress,
-        amount
-      })
+        amount,
+      });
     } else {
       transaction = wallet.createTransaction({
         recipientAddress,
-        amount
-      })
+        amount,
+      });
     }
   } catch (error: any) {
-    res.status(400)
-    res.json({ type: 'error', message: error.message})
+    res.status(400);
+    res.json({ type: 'error', message: error.message });
   }
   txpool.addTransaction(transaction!);
-  res.json({ type: 'success', transaction })
-})
+  res.json({ type: 'success', transaction });
+});
 
 async function syncBlockchains() {
   const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blocks`);

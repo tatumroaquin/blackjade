@@ -28,7 +28,11 @@ export default class Transaction {
       input || this.createInput({ senderWallet, output: this.output });
   }
 
-  createOutput({ senderWallet, recipientAddress, amount }: OutputParams): Output {
+  createOutput({
+    senderWallet,
+    recipientAddress,
+    amount,
+  }: OutputParams): Output {
     return {
       [recipientAddress]: amount,
       [senderWallet.keypair.getPublicKey()]: senderWallet.balance - amount,
@@ -58,7 +62,7 @@ export default class Transaction {
 
     this.output[senderWallet.getPublicKey()] -= amount;
 
-    this.input = this.createInput({ senderWallet, output: this.output })
+    this.input = this.createInput({ senderWallet, output: this.output });
   }
 
   static isValidTransaction(transaction: Transaction): boolean {

@@ -6,7 +6,11 @@ import {
   createPrivateKey,
 } from 'crypto';
 import SHA256 from '../utility/sha256.js';
-import { HexKeyPair, SelfVerifyParams, GlobalVerifyParams } from './keypair.d.js';
+import {
+  HexKeyPair,
+  SelfVerifyParams,
+  GlobalVerifyParams,
+} from './keypair.d.js';
 
 export default class KeyPair {
   publicKey: Buffer;
@@ -162,7 +166,7 @@ export default class KeyPair {
           Buffer.from(signature, 'hex')
         );
       default:
-        console.error('you must specify a `publicKey`')
+        console.error('you must specify a `publicKey`');
         return false;
     }
   }
