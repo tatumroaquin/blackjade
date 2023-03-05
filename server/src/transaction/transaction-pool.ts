@@ -13,8 +13,9 @@ export default class TransactionPool {
   }
 
   addTransaction(transaction: Transaction) {
-    const { id } = transaction;
-    this.transactionMap[id] = transaction;
+    if (transaction instanceof Transaction) {
+      this.transactionMap[transaction.id] = transaction;
+    }
   }
 
   getExistingTransaction({
