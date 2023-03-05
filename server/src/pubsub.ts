@@ -1,5 +1,7 @@
 import PubNub from 'pubnub';
 import Blockchain from './blockchain/chain.js';
+import Transaction from './transaction/transaction.js';
+import TransactionPool from './transaction/transaction-pool.js';
 import { PUBNUB_KEYS, NODE_ID } from './config.js';
 
 type Message = {
@@ -11,14 +13,23 @@ type Message = {
 const CHANNELS: { [CHANNEL: string]: string } = {
   TEST: 'TEST',
   BLOCKCHAIN: 'BLOCKCHAIN',
+  TRANSACTION: 'TRANSACTION',
 };
 
 export default class PubSub {
   blockchain: Blockchain;
+  txpool: TransactionPool;
   pubnub: PubNub;
 
-  constructor({ blockchain }: { blockchain: Blockchain }) {
+  constructor({
+    blockchain,
+    txpool,
+  }: {
+    blockchain: Blockchain;
+    txpool: TransactionPool;
+  }) {
     this.blockchain = blockchain;
+    this.txpool = txpool;
     this.pubnub = new PubNub(PUBNUB_KEYS);
     this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
     this.pubnub.addListener(this.listener());
@@ -45,6 +56,9 @@ export default class PubSub {
       case CHANNELS.BLOCKCHAIN:
         this.blockchain.replaceChain(parsedData);
         break;
+      case CHANNELS.TRANSACTION:
+        this.txpool.addTransaction(parsedData);
+        break;
     }
   }
 
@@ -58,6 +72,13 @@ export default class PubSub {
     this.publish({
       channel: CHANNELS.BLOCKCHAIN,
       message: JSON.stringify(this.blockchain),
+    });
+  }
+
+  broadcastTransaction(transaction: Transaction) {
+    this.publish({
+      channel: CHANNELS.TRANSACTION,
+      message: JSON.stringify(transaction),
     });
   }
 }
