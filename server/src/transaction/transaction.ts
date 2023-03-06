@@ -6,8 +6,11 @@ import {
   OutputParams,
   TransactionParams,
   UpdateParams,
+  RewardMinerParams,
 } from './transaction.d.js';
 import KeyPair from '../wallet/keypair.js';
+import Wallet from '../wallet/wallet.js';
+import { MINING_REWARD } from '../config.js';
 
 export default class Transaction {
   id: string;
@@ -22,10 +25,19 @@ export default class Transaction {
     output,
   }: TransactionParams) {
     this.id = uuid();
-    this.output =
-      output || this.createOutput({ senderWallet, recipientAddress, amount });
-    this.input =
-      input || this.createInput({ senderWallet, output: this.output });
+
+    if (senderWallet && recipientAddress && amount) {
+      this.output = this.createOutput({
+        senderWallet,
+        recipientAddress,
+        amount,
+      });
+      this.input = this.createInput({ senderWallet, output: this.output });
+      return;
+    }
+
+    this.output = output!;
+    this.input = input!;
   }
 
   createOutput({
@@ -63,6 +75,27 @@ export default class Transaction {
     this.output[senderWallet.getPublicKey()] -= amount;
 
     this.input = this.createInput({ senderWallet, output: this.output });
+  }
+
+  static rewardMiner({ minerWallet }: RewardMinerParams): Transaction {
+    const rewardWallet = new Wallet();
+
+    const rewardOutput = {
+      [minerWallet.getPublicKey()]: MINING_REWARD,
+    };
+
+    const rewardInput = {
+      timestamp: Date.now(),
+      wallet: rewardWallet.getPublicKey(),
+      amount: MINING_REWARD,
+      signature: rewardWallet.sign(rewardOutput),
+      type: 'MINER-REWARD',
+    };
+
+    return new this({
+      input: rewardInput,
+      output: rewardOutput,
+    });
   }
 
   static isValidTransaction(transaction: Transaction): boolean {
