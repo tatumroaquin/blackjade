@@ -81,6 +81,33 @@ describe('Transaction', () => {
     });
   });
 
+  describe('rewardMiner()', () => {
+    let rewardTx: Transaction;
+    let minerWallet: Wallet;
+
+    beforeEach(() => {
+      minerWallet = new Wallet();
+      rewardTx = Transaction.rewardMiner({ minerWallet });
+    });
+
+    describe('transaction is a miner reward', () => {
+      it('returns an instance of transaction object', () => {
+        expect(rewardTx instanceof Transaction).toBe(true);
+      });
+
+      it('includes a `tx.input.type` of `MINER-REWARD`', () => {
+        expect(rewardTx.input.type).toBeDefined();
+        expect(rewardTx.input.type === 'MINER-REWARD').toBe(true);
+      });
+    });
+
+    describe('miner reward passes cryptographic checks', () => {
+      it('contains a valid tx input signature', () => {
+        expect(Transaction.isValidTransaction(rewardTx)).toBe(true);
+      });
+    })
+  });
+
   describe('isValidTransaction()', () => {
     let consoleErrorSpy: jest.SpyInstance;
 
