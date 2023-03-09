@@ -13,7 +13,7 @@ export default class TransactionPool {
   }
 
   addTransaction(transaction: Transaction) {
-    if (transaction instanceof Transaction) {
+    if (Transaction.isValidTransaction(transaction)) {
       this.transactionMap[transaction.id] = transaction;
     }
   }

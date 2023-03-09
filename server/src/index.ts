@@ -87,7 +87,7 @@ async function syncBlockchains() {
   }
   console.log(`sync chains event, fetching from root "${ROOT_NODE_ADDRESS}"`);
   const rootChain = (await response.json()) as Block[];
-  blockchain.replaceChain(rootChain);
+  blockchain.replaceChain({ chain: rootChain });
 }
 
 async function syncTransactionPool() {
