@@ -112,7 +112,6 @@ describe('Blockchain', () => {
 
       describe('and the chain is valid', () => {
         it('replaces the `chain` instance with the new chain', () => {
-          console.log(newChain.chain);
           blockchain.replaceChain({
             chain: newChain.chain,
             skipValidation: true,
