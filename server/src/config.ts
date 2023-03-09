@@ -12,7 +12,7 @@ const MINING_REWARD = 20;
 
 const INITIAL_BALANCE = 50;
 
-const GENESIS_DATA = {
+const GENESIS_BLOCK = {
   timestamp: 1674971522141,
   prevHash: 'ORIGIN',
   hash: 'GENESIS-HASH',
@@ -34,7 +34,7 @@ const PUBNUB_KEYS: PubnubConfig = {
 };
 
 export {
-  GENESIS_DATA,
+  GENESIS_BLOCK,
   DIFFICULTY,
   MINING_RATE,
   MINING_REWARD,
