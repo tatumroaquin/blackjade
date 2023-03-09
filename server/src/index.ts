@@ -5,6 +5,7 @@ import Blockchain from './blockchain/chain.js';
 import PubSub from './pubsub.js';
 import Wallet from './wallet/wallet.js';
 import TransactionPool from './transaction/transaction-pool.js';
+import TransactionMiner from './transaction/transaction-miner.js';
 import { TransactionMapType } from './transaction/transaction-pool.d.js';
 
 const blockchain = new Blockchain();
@@ -13,6 +14,13 @@ const txpool = new TransactionPool();
 const wallet = new Wallet();
 
 const pubsub = new PubSub({ blockchain, txpool });
+
+const txminer = new TransactionMiner({
+  blockchain,
+  txpool,
+  pubsub,
+});
+
 const { ROOT_NODE_ADDRESS } = process.env;
 
 const app = express();
@@ -29,7 +37,12 @@ app.get('/api/tx-pool', (_: Request, res: Response) => {
   res.json(txpool.transactionMap);
 });
 
-app.post('/api/mine', (req: Request, res: Response) => {
+app.get('/api/mine-txpool', (_: Request, res: Response) => {
+  txminer.mineTransactions({ minerWallet: wallet });
+  res.redirect('/api/blocks');
+});
+
+app.post('/api/mine-block', (req: Request, res: Response) => {
   const { data } = req.body;
   blockchain.addBlock({ data });
   pubsub.broadcastChain();
