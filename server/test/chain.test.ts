@@ -1,5 +1,7 @@
 import Block from '../src/blockchain/block.js';
 import Blockchain from '../src/blockchain/chain.js';
+import Transaction from '../src/transaction/transaction.js';
+import Wallet from '../src/wallet/wallet.js';
 
 describe('Blockchain', () => {
   let blockchain = new Blockchain();
@@ -25,7 +27,7 @@ describe('Blockchain', () => {
     expect(blockchain.chain.slice(-1).pop()?.data).toEqual(data);
   });
 
-  describe('isValidchain()', () => {
+  describe('isValidChain()', () => {
     beforeEach(() => {
       blockchain.addBlock({ data: 'block 1' });
       blockchain.addBlock({ data: 'block 2' });
@@ -122,6 +124,122 @@ describe('Blockchain', () => {
           expect(blockchain.chain).not.toEqual(newChain.chain);
           expect(consoleErrorSpy).toBeCalled();
         });
+      });
+    });
+  });
+
+  describe('isValidTransactions()', () => {
+    let transaction1: Transaction;
+    let minerReward1: Transaction;
+
+    beforeEach(() => {
+      transaction1 = new Wallet().createTransaction({
+        recipientAddress: new Wallet().getPublicKey(),
+        amount: 1,
+      })!;
+      minerReward1 = Transaction.rewardMiner({
+        minerWallet: new Wallet(),
+      });
+    });
+
+    describe('the first block is NOT the genesis block', () => {
+      it('returns false', () => {
+        let fakeGenesis = Block.getGenesis();
+        fakeGenesis.data = 'EVIL DATA';
+        newChain.chain[0] = fakeGenesis;
+        expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+      });
+    });
+
+    describe('there is a duplicate miner reward tx in one block', () => {
+      it('returns false', () => {
+        let minerReward2 = Transaction.rewardMiner({
+          minerWallet: new Wallet(),
+        });
+        newChain.addBlock({ data: [transaction1, minerReward1, minerReward2] });
+        expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+      });
+    });
+
+    describe('miner reward value does NOT match the global constant', () => {
+      it('returns false', () => {
+        let minerAddress = Object.keys(minerReward1.output)[0];
+        minerReward1.output[minerAddress] = 999;
+        newChain.addBlock({ data: [transaction1, minerReward1] });
+        expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+      });
+    });
+
+    describe('the transaction object is NOT valid', () => {
+      let senderWallet: Wallet;
+      let recipientWallet: Wallet;
+      let transaction2: Transaction;
+
+      beforeEach(() => {
+        senderWallet = new Wallet();
+        recipientWallet = new Wallet();
+        transaction2 = senderWallet.createTransaction({
+          recipientAddress: recipientWallet.getPublicKey(),
+          amount: 1,
+        })!;
+      });
+
+      describe("sender's return output is higher than the balance", () => {
+        it('returns false', () => {
+          transaction2.output[senderWallet.getPublicKey()] = 999;
+          newChain.addBlock({
+            data: [transaction1, transaction2, minerReward1],
+          });
+          expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+        });
+      });
+
+      describe("the recipent's output is higher than sender balance", () => {
+        it('returns false', () => {
+          transaction2.output[recipientWallet.getPublicKey()] = 999;
+          newChain.addBlock({
+            data: [transaction1, transaction2, minerReward1],
+          });
+          expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+        });
+      });
+
+      describe('the tx input amount does NOT equal outputs', () => {
+        it('returns false', () => {
+          transaction2.input.amount = 999;
+          newChain.addBlock({
+            data: [transaction1, transaction2, minerReward1],
+          });
+          expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+        });
+      });
+    });
+
+    describe('there is a duplicate transaction (double-spending)', () => {
+      it('returns false', () => {
+        newChain.addBlock({ data: [transaction1, transaction1, minerReward1] });
+        expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+      });
+    });
+
+    describe("wallet's true balance does NOT match the transactions", () => {
+      it('returns false', () => {
+
+        const evilWallet = new Wallet();
+        evilWallet.balance = 9000;
+
+        const evilTransaction = evilWallet.createTransaction({
+          recipientAddress: new Wallet().getPublicKey(),
+          amount: 100,
+        });
+        newChain.addBlock({ data: [transaction1, evilTransaction, minerReward1] });
+        expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
+      });
+    });
+
+    describe('all transactions are completely valid', () => {
+      it('returns true', () => {
+        expect(blockchain.isValidTransactions(newChain.chain)).toBe(true);
       });
     });
   });
