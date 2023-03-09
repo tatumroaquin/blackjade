@@ -1,5 +1,5 @@
 import Block from '../src/blockchain/block.js';
-import { GENESIS_DATA } from '../src/config.js';
+import { GENESIS_BLOCK } from '../src/config.js';
 import sha256 from '../src/utility/sha256.js';
 import hexToBin from '../src/utility/hex-to-bin.js';
 
@@ -10,7 +10,7 @@ describe('Block', () => {
       expect(Block.getGenesis() instanceof Block).toBe(true);
     });
     it('returns the real genesis block', () => {
-      expect(Block.getGenesis()).toEqual(GENESIS_DATA);
+      expect(Block.getGenesis()).toEqual(GENESIS_BLOCK);
     });
   });
 
