@@ -5,6 +5,7 @@ export type Input = {
   timestamp: number;
   wallet: string;
   signature: string;
+  type?: string;
 };
 
 export type InputParams = {
@@ -23,9 +24,9 @@ export type OutputParams = {
 };
 
 export type TransactionParams = {
-  senderWallet: Wallet;
-  recipientAddress: string;
-  amount: number;
+  senderWallet?: Wallet;
+  recipientAddress?: string;
+  amount?: number;
   input?: Input;
   output?: Output;
 };
@@ -35,3 +36,7 @@ export type UpdateParams = {
   recipientAddress: string;
   amount: number;
 };
+
+export type RewardMinerParams = {
+  minerWallet: Wallet;
+}

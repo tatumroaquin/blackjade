@@ -54,7 +54,12 @@ export default class PubSub {
 
     switch (channel) {
       case CHANNELS.BLOCKCHAIN:
-        this.blockchain.replaceChain(parsedData);
+        this.blockchain.replaceChain({
+          chain: parsedData,
+          onSuccess: () => {
+            this.txpool.clearBlockchainTransactions(parsedData);
+          },
+        });
         break;
       case CHANNELS.TRANSACTION:
         this.txpool.addTransaction(parsedData);

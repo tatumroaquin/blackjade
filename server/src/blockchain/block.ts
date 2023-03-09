@@ -1,4 +1,4 @@
-import { GENESIS_DATA, MINING_RATE } from '../config.js';
+import { GENESIS_BLOCK, MINING_RATE } from '../config.js';
 import sha256 from '../utility/sha256.js';
 import hexToBin from '../utility/hex-to-bin.js';
 
@@ -36,7 +36,7 @@ export default class Block {
   }
 
   static getGenesis() {
-    return new this(GENESIS_DATA);
+    return new this(GENESIS_BLOCK);
   }
 
   static mineBlock({ prevBlock, data }: { prevBlock: Block; data: any }) {
