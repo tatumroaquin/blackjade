@@ -97,7 +97,7 @@ describe('Blockchain', () => {
 
       describe('and the chain is valid', () => {
         it('retains the current `chain` instance', () => {
-          blockchain.replaceChain(newChain.chain);
+          blockchain.replaceChain({ chain: newChain.chain });
           expect(blockchain.chain).not.toEqual(newChain.chain);
           expect(consoleErrorSpy).toBeCalled();
         });
@@ -112,7 +112,11 @@ describe('Blockchain', () => {
 
       describe('and the chain is valid', () => {
         it('replaces the `chain` instance with the new chain', () => {
-          blockchain.replaceChain(newChain.chain);
+          console.log(newChain.chain);
+          blockchain.replaceChain({
+            chain: newChain.chain,
+            skipValidation: true,
+          });
           expect(blockchain.chain).toEqual(newChain.chain);
         });
       });
@@ -120,7 +124,7 @@ describe('Blockchain', () => {
       describe('and the chain is invalid', () => {
         it('retains the current `chain` instance', () => {
           newChain.chain[1].data = 'EVIL DATA';
-          blockchain.replaceChain(newChain.chain);
+          blockchain.replaceChain({ chain: newChain.chain });
           expect(blockchain.chain).not.toEqual(newChain.chain);
           expect(consoleErrorSpy).toBeCalled();
         });
@@ -224,7 +228,6 @@ describe('Blockchain', () => {
 
     describe("wallet's true balance does NOT match the transactions", () => {
       it('returns false', () => {
-
         const evilWallet = new Wallet();
         evilWallet.balance = 9000;
 
@@ -232,7 +235,9 @@ describe('Blockchain', () => {
           recipientAddress: new Wallet().getPublicKey(),
           amount: 100,
         });
-        newChain.addBlock({ data: [transaction1, evilTransaction, minerReward1] });
+        newChain.addBlock({
+          data: [transaction1, evilTransaction, minerReward1],
+        });
         expect(blockchain.isValidTransactions(newChain.chain)).toBe(false);
       });
     });
