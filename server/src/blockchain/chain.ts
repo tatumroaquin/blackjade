@@ -3,6 +3,7 @@ import Block from './block.js';
 import Transaction from '../transaction/transaction.js';
 import Wallet from '../wallet/wallet.js';
 import sha256 from '../utility/sha256.js';
+import { ReplaceChainParams } from './chain.d.js';
 
 export default class Blockchain {
   chain: Block[];
@@ -40,7 +41,7 @@ export default class Blockchain {
     return true;
   }
 
-  replaceChain(chain: Block[]) {
+  replaceChain({ chain, skipValidation, onSuccess }: ReplaceChainParams) {
     if (this.chain.length >= chain.length) {
       console.error('incoming chain must be longer');
       return;
@@ -50,6 +51,14 @@ export default class Blockchain {
       console.error('incoming chain must be valid');
       return;
     }
+
+    // to avoid validation on unit tests with invalid tx data
+    if (!skipValidation && !this.isValidTransactions(chain)) {
+      console.error('incoming chain must have valid transactions');
+      return;
+    }
+
+    if (onSuccess) onSuccess();
 
     this.chain = chain;
   }
