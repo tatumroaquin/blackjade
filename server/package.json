@@ -1,5 +1,5 @@
 {
-  "name": "blackjade",
+  "name": "blackjade-api",
   "version": "1.0.0",
   "description": "Blackjade is a peer-to-peer Blockchain, implemented in JavaScript",
   "type": "module",
