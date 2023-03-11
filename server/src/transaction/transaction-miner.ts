@@ -1,7 +1,7 @@
 import Blockchain from '../blockchain/chain.js';
 import Transaction from './transaction.js';
 import TransactionPool from './transaction-pool.js';
-import PubSub from '../pubsub.js';
+import PubSub from '../network/pubsub.redis.js';
 import Wallet from '../wallet/wallet.js';
 import { TransactionMinerParams } from './transaction-miner.d.js';
 

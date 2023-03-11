@@ -33,6 +33,8 @@ const PUBNUB_KEYS: PubnubConfig = {
   userId: NODE_ID,
 };
 
+const REDIS_URL = process.env.REDIS_URL;
+
 export {
   GENESIS_BLOCK,
   DIFFICULTY,
@@ -40,5 +42,6 @@ export {
   MINING_REWARD,
   INITIAL_BALANCE,
   PUBNUB_KEYS,
+  REDIS_URL,
   NODE_ID,
 };
