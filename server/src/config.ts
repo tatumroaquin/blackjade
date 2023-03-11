@@ -2,7 +2,7 @@ import { PubnubConfig } from 'pubnub';
 import { v4 as uuid } from 'uuid';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 const DIFFICULTY = 3;
 
