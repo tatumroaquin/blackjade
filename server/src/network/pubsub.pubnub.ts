@@ -1,8 +1,8 @@
 import PubNub from 'pubnub';
-import Blockchain from './blockchain/chain.js';
-import Transaction from './transaction/transaction.js';
-import TransactionPool from './transaction/transaction-pool.js';
-import { PUBNUB_KEYS, NODE_ID } from './config.js';
+import Blockchain from '../blockchain/chain.js';
+import Transaction from '../transaction/transaction.js';
+import TransactionPool from '../transaction/transaction-pool.js';
+import { PUBNUB_KEYS, NODE_ID } from '../config.js';
 
 type Message = {
   channel: string;
