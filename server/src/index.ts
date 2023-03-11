@@ -5,7 +5,7 @@ import PubSub from './network/pubsub.redis.js';
 import Wallet from './wallet/wallet.js';
 import TransactionPool from './transaction/transaction-pool.js';
 import TransactionMiner from './transaction/transaction-miner.js';
-import { TransactionMapType } from './transaction/transaction-pool.d.js';
+import { TransactionMap } from './transaction/transaction-pool.d.js';
 import { NODE_ID } from './config.js';
 
 const blockchain = new Blockchain();
@@ -97,7 +97,7 @@ async function syncTransactionPool() {
     return;
   }
 
-  const rootTxPool = (await response.json()) as TransactionMapType;
+  const rootTxPool = (await response.json()) as TransactionMap;
   txpool.setTransactionMap(rootTxPool);
   console.log(`sync tx-pool event, fetching from root "${ROOT_NODE_ADDRESS}"`);
 }
