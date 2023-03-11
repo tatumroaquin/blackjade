@@ -1,12 +1,12 @@
 import express, { Request, Response } from 'express';
 import fetch from 'node-fetch';
-import Block from './blockchain/block.js';
 import Blockchain from './blockchain/chain.js';
-import PubSub from './pubsub.js';
+import PubSub from './network/pubsub.redis.js';
 import Wallet from './wallet/wallet.js';
 import TransactionPool from './transaction/transaction-pool.js';
 import TransactionMiner from './transaction/transaction-miner.js';
 import { TransactionMapType } from './transaction/transaction-pool.d.js';
+import { NODE_ID } from './config.js';
 
 const blockchain = new Blockchain();
 
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 setTimeout(() => pubsub.broadcastChain(), 1000);
 
 app.get('/api/blocks', (_: Request, res: Response) => {
-  res.json(blockchain.chain);
+  res.json(blockchain);
 });
 
 app.get('/api/tx-pool', (_: Request, res: Response) => {
@@ -86,8 +86,8 @@ async function syncBlockchains() {
     return;
   }
   console.log(`sync chains event, fetching from root "${ROOT_NODE_ADDRESS}"`);
-  const rootChain = (await response.json()) as Block[];
-  blockchain.replaceChain({ chain: rootChain });
+  const rootChain = await response.json() as Blockchain;
+  blockchain.replaceChain({ blockchain: rootChain });
 }
 
 async function syncTransactionPool() {
@@ -99,7 +99,7 @@ async function syncTransactionPool() {
 
   const rootTxPool = (await response.json()) as TransactionMapType;
   txpool.setTransactionMap(rootTxPool);
-  console.log(`sync tx-pool event, fetching from root "${rootTxPool}"`);
+  console.log(`sync tx-pool event, fetching from root "${ROOT_NODE_ADDRESS}"`);
 }
 
 function getPortNumber() {
@@ -113,6 +113,7 @@ function getPortNumber() {
 const PORT = getPortNumber();
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
+  console.log(`Node ID: ${NODE_ID}`);
   (async () => {
     await syncBlockchains();
     await syncTransactionPool();
