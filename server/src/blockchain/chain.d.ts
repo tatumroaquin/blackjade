@@ -1,7 +1,7 @@
-import Block from './block.js';
+import Blockchain from './chain.js';
 
-export type ReplaceChainParams = {
-  chain: Block[];
+export type ReplaceChain = {
+  blockchain: Blockchain;
   skipValidation?: boolean;
   onSuccess?: () => void;
 };

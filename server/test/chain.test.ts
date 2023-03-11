@@ -97,7 +97,7 @@ describe('Blockchain', () => {
 
       describe('and the chain is valid', () => {
         it('retains the current `chain` instance', () => {
-          blockchain.replaceChain({ chain: newChain.chain });
+          blockchain.replaceChain({ blockchain: newChain });
           expect(blockchain.chain).not.toEqual(newChain.chain);
           expect(consoleErrorSpy).toBeCalled();
         });
@@ -113,7 +113,7 @@ describe('Blockchain', () => {
       describe('and the chain is valid', () => {
         it('replaces the `chain` instance with the new chain', () => {
           blockchain.replaceChain({
-            chain: newChain.chain,
+            blockchain: newChain,
             skipValidation: true,
           });
           expect(blockchain.chain).toEqual(newChain.chain);
@@ -123,7 +123,7 @@ describe('Blockchain', () => {
       describe('and the chain is invalid', () => {
         it('retains the current `chain` instance', () => {
           newChain.chain[1].data = 'EVIL DATA';
-          blockchain.replaceChain({ chain: newChain.chain });
+          blockchain.replaceChain({ blockchain: newChain });
           expect(blockchain.chain).not.toEqual(newChain.chain);
           expect(consoleErrorSpy).toBeCalled();
         });
