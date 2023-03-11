@@ -1,12 +1,9 @@
 import Block from '../blockchain/block.js';
 import Transaction from './transaction.js';
-import {
-  TransactionMapType,
-  HasTransactionParams,
-} from './transaction-pool.d.js';
+import { TransactionMap, HasTransaction } from './transaction-pool.d.js';
 
 export default class TransactionPool {
-  transactionMap: TransactionMapType;
+  transactionMap: TransactionMap;
 
   constructor() {
     this.transactionMap = {};
@@ -20,7 +17,7 @@ export default class TransactionPool {
 
   getExistingTransaction({
     inputAddress,
-  }: HasTransactionParams): Transaction | undefined {
+  }: HasTransaction): Transaction | undefined {
     const transactions = Object.values(this.transactionMap);
     return transactions.find((tx) => tx.input.wallet === inputAddress);
   }
@@ -41,7 +38,7 @@ export default class TransactionPool {
     }
   }
 
-  setTransactionMap(transactionMap: TransactionMapType) {
+  setTransactionMap(transactionMap: TransactionMap) {
     this.transactionMap = transactionMap;
   }
 

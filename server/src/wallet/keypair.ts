@@ -8,8 +8,8 @@ import {
 import SHA256 from '../utility/sha256.js';
 import {
   HexKeyPair,
-  SelfVerifyParams,
-  GlobalVerifyParams,
+  SelfVerify,
+  GlobalVerify,
 } from './keypair.d.js';
 
 export default class KeyPair {
@@ -142,7 +142,7 @@ export default class KeyPair {
     return signature.toString('hex');
   }
 
-  static verify({ publicKey, data, signature }: GlobalVerifyParams): boolean {
+  static verify({ publicKey, data, signature }: GlobalVerify): boolean {
     const hashedData = SHA256(data);
 
     switch (publicKey.constructor.name) {
@@ -171,7 +171,7 @@ export default class KeyPair {
     }
   }
 
-  verify({ data, signature }: SelfVerifyParams): boolean {
+  verify({ data, signature }: SelfVerify): boolean {
     const hashedData = SHA256(data);
 
     return verify(

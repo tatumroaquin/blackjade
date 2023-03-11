@@ -8,5 +8,5 @@ export default function sha256(...args: any) {
       .sort()
       .join(' ')
   );
-  return SHA256.digest('hex')
+  return SHA256.digest('hex');
 }

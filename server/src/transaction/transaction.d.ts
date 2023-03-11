@@ -8,7 +8,7 @@ export type Input = {
   type?: string;
 };
 
-export type InputParams = {
+export type CreateInput = {
   senderWallet: Wallet;
   output: Output;
 };
@@ -17,7 +17,7 @@ export type Output = {
   [recipient: string]: number;
 };
 
-export type OutputParams = {
+export type CreateOutput = {
   senderWallet: Wallet;
   recipientAddress: string;
   amount: number;
@@ -31,12 +31,12 @@ export type TransactionParams = {
   output?: Output;
 };
 
-export type UpdateParams = {
+export type Update = {
   senderWallet: Wallet;
   recipientAddress: string;
   amount: number;
 };
 
-export type RewardMinerParams = {
+export type RewardMiner = {
   minerWallet: Wallet;
-}
+};

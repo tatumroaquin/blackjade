@@ -1,12 +1,12 @@
 import { v4 as uuid } from 'uuid';
 import {
   Input,
-  InputParams,
+  CreateInput,
   Output,
-  OutputParams,
+  CreateOutput,
   TransactionParams,
-  UpdateParams,
-  RewardMinerParams,
+  Update,
+  RewardMiner,
 } from './transaction.d.js';
 import KeyPair from '../wallet/keypair.js';
 import Wallet from '../wallet/wallet.js';
@@ -44,14 +44,14 @@ export default class Transaction {
     senderWallet,
     recipientAddress,
     amount,
-  }: OutputParams): Output {
+  }: CreateOutput): Output {
     return {
       [recipientAddress]: amount,
       [senderWallet.keypair.getPublicKey()]: senderWallet.balance - amount,
     };
   }
 
-  createInput({ senderWallet, output }: InputParams): Input {
+  createInput({ senderWallet, output }: CreateInput): Input {
     return {
       timestamp: Date.now(),
       wallet: senderWallet.keypair.getPublicKey(),
@@ -60,7 +60,7 @@ export default class Transaction {
     };
   }
 
-  update({ senderWallet, recipientAddress, amount }: UpdateParams) {
+  update({ senderWallet, recipientAddress, amount }: Update) {
     if (amount > this.output[senderWallet.getPublicKey()]) {
       console.error(`Amount ${amount} exceeds balance.`);
       return;
@@ -77,7 +77,7 @@ export default class Transaction {
     this.input = this.createInput({ senderWallet, output: this.output });
   }
 
-  static rewardMiner({ minerWallet }: RewardMinerParams): Transaction {
+  static rewardMiner({ minerWallet }: RewardMiner): Transaction {
     const rewardWallet = new Wallet();
 
     const rewardOutput = {
