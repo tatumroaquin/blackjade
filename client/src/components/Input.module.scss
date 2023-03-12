@@ -1,0 +1,24 @@
+.input {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+
+  &__label {
+    margin-bottom: 0.2rem;
+    padding: 0.1rem;
+    color: #aaaaaa;
+  }
+
+  &__field {
+    border: none;
+    background: #0d1825;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    color: #aaaaaa;
+    &:focus {
+      outline: orangered;
+    }
+  }
+}
