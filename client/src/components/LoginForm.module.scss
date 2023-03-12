@@ -1,0 +1,41 @@
+.login {
+  &__container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    background: #151f3f;
+    border-radius: 1rem;
+    padding: 1rem;
+    width: 50%;
+
+    Button {
+      align-self: center;
+    }
+  }
+
+  &__title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 1rem;
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .login__form {
+    width: 80vw;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .login__form {
+    width: 100vw;
+  }
+}
+
