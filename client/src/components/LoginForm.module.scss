@@ -11,7 +11,7 @@
     background: #151f3f;
     border-radius: 1rem;
     padding: 1rem;
-    width: 50%;
+    width: 30rem;
 
     Button {
       align-self: center;
@@ -19,7 +19,7 @@
   }
 
   &__title {
-    color: white;
+    color: #aaaaaa;
     font-size: 2.5rem;
     font-weight: bold;
     margin: 1rem;
@@ -27,15 +27,8 @@
   }
 }
 
-@media only screen and (max-width: 900px) {
-  .login__form {
-    width: 80vw;
-  }
-}
-
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 576px) {
   .login__form {
     width: 100vw;
   }
 }
-

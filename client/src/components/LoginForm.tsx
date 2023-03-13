@@ -1,5 +1,5 @@
-import { Input } from './Input';
-import { Button } from './Button';
+import { Input } from './UI/Input';
+import { Button } from './UI/Button';
 import styles from './LoginForm.module.scss';
 
 export const LoginForm = () => {
