@@ -1,0 +1,30 @@
+$background: #151f2e;
+
+.hash {
+  padding: 1rem;
+  background: #005555;
+  border-radius: 0.3rem;
+  border-style: solid;
+  border-width: 1px;
+  display: flex;
+  flex-direction: column;
+  margin: 1rem;
+
+  &__label {
+    padding: 0 0.2rem 0;
+    color: #aabbcc;
+    overflow-wrap: break-word;
+  }
+}
+
+.block {
+  background: $background;
+  display: flex;
+  flex-direction: column;
+  &__label--yellow {
+    color: yellow;
+  }
+  &__text--green {
+    color: limegreen;
+  }
+}
