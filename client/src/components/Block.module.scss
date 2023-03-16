@@ -8,12 +8,13 @@ $background: #151f2e;
   border-width: 1px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  overflow-wrap: word-break;
   margin: 1rem;
 
   &__label {
     padding: 0 0.2rem 0;
     color: #aabbcc;
-    overflow-wrap: break-word;
   }
 }
 
@@ -21,9 +22,31 @@ $background: #151f2e;
   background: $background;
   display: flex;
   flex-direction: column;
+  width: 100vw;
+
+  &__info {
+    background: $background;
+    border-radius: 0.3rem;
+    margin: 1rem auto;
+    padding: 1rem;
+    table-layout: fixed;
+    text-align: center;
+    width: 95vw;
+    word-wrap: break-word;
+
+    th {
+      color: yellow;
+    }
+
+    td {
+      color: limegreen;
+    }
+  }
+
   &__label--yellow {
     color: yellow;
   }
+
   &__text--green {
     color: limegreen;
   }

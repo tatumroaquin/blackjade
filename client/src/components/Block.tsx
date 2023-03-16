@@ -1,3 +1,4 @@
+import { Card } from './UI/Card';
 import styles from './Block.module.scss';
 
 interface Block<T> {
@@ -22,40 +23,28 @@ export const Block = ({ block }: { block: Block<string> }) => {
           <h1 id='hash'>{hash}</h1>
         </div>
 
-        <label className={styles['block__label--yellow']} htmlFor='timestamp'>
-          Timestamp
-        </label>
-        <p className={styles['block__text--green']} id='timestamp'>
-          {timestamp}
-        </p>
+        <table className={styles['block__info']}>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Prev Hash</th>
+              <th>Nonce</th>
+              <th>Difficulty</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{new Date(timestamp).toUTCString()}</td>
+              <td>{prevHash}</td>
+              <td>{nonce}</td>
+              <td>{difficulty}</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <label className={styles['block__label--yellow']} htmlFor='prev-hash'>
-          PrevHash
-        </label>
-        <p className={styles['block__text--green']} id='prev-hash'>
-          {prevHash}
-        </p>
-
-        <label className={styles['block__label--yellow']} htmlFor='nonce'>
-          Nonce
-        </label>
-        <p className={styles['block__text--green']} id='nonce'>
-          {nonce}
-        </p>
-
-        <label className={styles['block__label--yellow']} htmlFor='nonce'>
-          Difficulty
-        </label>
-        <p className={styles['block__text--green']} id='difficulty'>
-          {difficulty}
-        </p>
-
-        <label className={styles['block__label--yellow']} htmlFor='data'>
-          Data
-        </label>
-        <p className={styles['block__text--green']} id='data'>
-          {JSON.stringify(data)}
-        </p>
+        <div className={styles['block__data']}>
+          {JSON.stringify(data, null, 2)}
+        </div>
       </div>
     </>
   );
