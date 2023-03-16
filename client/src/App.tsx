@@ -1,11 +1,14 @@
-// import { Login } from './pages/Login';
-import { LoginForm } from './components/LoginForm';
-import './App.module.scss';
+import { Login } from './pages/Login';
+import { Block } from './components/Block';
+import { DUMMY_BLOCKCHAIN } from './dummy/BLOCKCHAIN';
+import './App.scss';
 
 export default function App() {
+  const {chain} = DUMMY_BLOCKCHAIN;
+  const block = chain[2];
   return (
     <>
-      <LoginForm />
+      <Block block={block} />
     </>
   );
 }

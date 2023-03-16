@@ -1,19 +1,15 @@
 @font-face {
-  font-family: 'Hack Nerd Font Mono';
+  font-family: 'Hack';
   src: url('/fonts/Hack Bold Italic Nerd Font Complete Mono.ttf');
   src: url('/fonts/Hack Bold Nerd Font Complete Mono.ttf');
   src: url('/fonts/Hack Italic Nerd Font Complete Mono.ttf');
   src: url('/fonts/Hack Regular Nerd Font Complete Mono.ttf');
-  font-display: swap;
-}
-
-:root {
-  font-family: 'Hack Nerd Font Mono';
-  color: white;
 }
 
 body {
   background: #0b1622;
+  color: white;
+  font-family: 'Hack';
 }
 
 *,
