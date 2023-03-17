@@ -1,0 +1,19 @@
+.transaction {
+  width: 100%;
+  margin-top: 1rem;
+  justify-content: center;
+
+  div {
+    background: limegreen;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+
+    div {
+      background: grey;
+      display: flex;
+      flex-direction: column;
+      width: 49%;
+    }
+  }
+}
