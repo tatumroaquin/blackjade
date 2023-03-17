@@ -6,10 +6,8 @@
   &__form {
     display: flex;
     flex-direction: column;
-    background: #151f3f;
-    border-radius: 1rem;
     padding: 1rem;
-    width: 30rem;
+    width: 25rem;
 
     Button {
       align-self: center;
@@ -27,6 +25,6 @@
 
 @media only screen and (max-width: 576px) {
   .login__form {
-    width: 100vw;
+    width: 100%;
   }
 }

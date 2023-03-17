@@ -7,7 +7,7 @@ export const Login = () => {
   return (
     <div className={styles['login']}>
       <Card>
-        <form>
+        <form className={styles['login__form']}>
           <h1 className={styles['login__title']}>Login</h1>
           <Input
             id='username'
