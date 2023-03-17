@@ -1,16 +1,17 @@
 import { Card } from './UI/Card';
+import { Transactions } from './Transactions';
 import styles from './Block.module.scss';
 
-interface Block<T> {
+interface Block {
   timestamp: number;
   prevHash: string;
   hash: string;
   nonce: number;
   difficulty: number;
-  data: object;
+  data: any;
 }
 
-export const Block = ({ block }: { block: Block<string> }) => {
+export const Block = ({ block }: { block: Block }) => {
   const { timestamp, prevHash, hash, nonce, difficulty, data } = block;
 
   return (
@@ -43,7 +44,7 @@ export const Block = ({ block }: { block: Block<string> }) => {
         </table>
 
         <div className={styles['block__data']}>
-          {JSON.stringify(data, null, 2)}
+          <Transactions transactions={data}/>
         </div>
       </div>
     </>

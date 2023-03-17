@@ -23,6 +23,7 @@ $background: #151f2e;
   display: flex;
   flex-direction: column;
   width: 100vw;
+  word-break: break-all;
 
   &__info {
     background: $background;
