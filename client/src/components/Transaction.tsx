@@ -44,7 +44,7 @@ export const Transaction: React.FC<Transaction> = ({ transaction }) => {
         <Card>
           <h3>Output</h3>
           {Object.keys(output).map((key) => (
-            <p key={key}>{`wallet: ${key.substring(key.length - 40)} ${
+            <p key={key}>{`wallet: ${key} ${
               output[key]
             } BJC`}</p>
           ))}
