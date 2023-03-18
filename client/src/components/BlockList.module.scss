@@ -1,0 +1,14 @@
+.block-list {
+  table-layout: auto;
+  text-align: center;
+  word-break: break-word;
+  width: 100%;
+
+  th {
+    color: orange;
+  }
+
+  td {
+    color: limegreen;
+  }
+}
