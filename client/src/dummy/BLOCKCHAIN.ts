@@ -1113,5 +1113,3 @@ export const DUMMY_BLOCKCHAIN = {
     },
   ],
 };
-
-console.log(DUMMY_BLOCKCHAIN.chain.length);
