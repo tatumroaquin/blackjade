@@ -1,0 +1,26 @@
+.navbar {
+  width: 100%;
+  background: #155555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+
+  &__links {
+    display: flex;
+    justify-content: space-between;
+    width: 30rem;
+  }
+
+  &__link {
+    list-style: none;
+  }
+
+  Button {
+    background: darkorange;
+    color: white;
+    &:hover {
+      color: white;
+    }
+  }
+}
