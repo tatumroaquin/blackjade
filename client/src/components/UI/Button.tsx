@@ -2,7 +2,7 @@ import styles from './Button.module.scss';
 
 interface Button {
   type?: 'button' | 'submit' | 'reset';
-  disabled: boolean;
+  disabled?: boolean;
   children: string;
 }
 

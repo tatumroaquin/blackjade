@@ -23,7 +23,7 @@ export const Login = () => {
             type='password'
             placeholder='Enter Password'
           />
-          <Button type='button' disabled={false}>
+          <Button type='button'>
             Login
           </Button>
         </form>
