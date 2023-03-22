@@ -1,33 +1,15 @@
-import { Card } from './UI/Card';
+import { FC } from 'react';
 import { Transaction } from './Transaction';
+import { _Transaction, _Transactions } from '../types';
 import styles from './Transactions.module.scss';
 
-interface Transaction {
-  id: string;
-  input: {
-    timestamp: number;
-    wallet: string;
-    amount: number;
-    signature: string;
-  };
-  output: {
-    [address: string]: number;
-  };
-}
-
-// type Transactions = Transaction[]
-
-interface Transactions {
-  transactions: Transaction[];
-}
-
-export const Transactions: React.FC<Transactions> = ({ transactions }) => {
+export const Transactions: FC<_Transactions> = ({ transactions }) => {
   return (
     <div className={styles['transactions']}>
       <h4>Transactions</h4>
-      {transactions.map((tx, index) => {
-        return <Transaction transaction={tx} key={index} />;
-      })}
+      {transactions.map((tx: _Transaction, index: number) => (
+        <Transaction transaction={tx} key={index} />
+      ))}
     </div>
   );
 };

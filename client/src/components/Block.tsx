@@ -1,17 +1,9 @@
-import { Card } from './UI/Card';
+import { FC } from 'react';
 import { Transactions } from './Transactions';
+import { _Block } from '../types';
 import styles from './Block.module.scss';
 
-interface Block {
-  timestamp: number;
-  prevHash: string;
-  hash: string;
-  nonce: number;
-  difficulty: number;
-  data: any;
-}
-
-export const Block = ({ block }: { block: Block }) => {
+export const Block: FC<{ block: _Block }> = ({ block }) => {
   const { timestamp, prevHash, hash, nonce, difficulty, data } = block;
 
   return (
@@ -44,7 +36,7 @@ export const Block = ({ block }: { block: Block }) => {
         </table>
 
         <div className={styles['block__data']}>
-          <Transactions transactions={data}/>
+          <Transactions transactions={data} />
         </div>
       </div>
     </>
