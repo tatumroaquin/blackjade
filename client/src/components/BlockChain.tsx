@@ -1,5 +1,7 @@
+import { FC } from 'react';
 import { Card } from './UI/Card';
-import styles from './BlockList.module.scss';
+import styles from './BlockChain.module.scss';
+
 interface Block {
   timestamp: number;
   prevHash: string;
@@ -9,14 +11,14 @@ interface Block {
   data: any;
 }
 
-interface BlockList {
+interface BlockChain {
   chain: Array<Block>;
 }
 
-export const BlockList: React.FC<BlockList> = ({ chain }) => {
+export const BlockChain: FC<BlockChain> = ({ chain }) => {
   return (
     <Card>
-      <table className={styles['block-list']}>
+      <table className={styles['block-chain']}>
         <thead>
           <tr>
             <th>Height</th>
