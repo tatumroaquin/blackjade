@@ -1,18 +1,36 @@
+import { NavLink } from 'react-router-dom';
 import { Button } from '../UI/Button';
 import styles from './NavBar.module.scss';
 
 export const NavBar = () => {
+  function handleNavLink({ isActive }: { isActive: boolean }) {
+    return isActive ? styles['navbar__link--active'] : styles['navbar__link'];
+  }
+
   return (
-    <div className={styles['navbar']}>
+    <nav className={styles['navbar']}>
       <ul className={styles['navbar__links']}>
-        <li className={styles['navbar__link']}>Home</li>
-        <li className={styles['navbar__link']}>Blockchain</li>
-        <li className={styles['navbar__link']}>Transactions</li>
-        <li
-          className={`${styles['navbar__link']} ${styles['navbar__link--login']}`}
-        ></li>
+        <li>
+          <NavLink className={handleNavLink} to='/'>
+            Home
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink className={handleNavLink} to='/blockchain'>
+            Blockchain
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink className={handleNavLink} to='/tx-pool'>
+            Transactions
+          </NavLink>
+        </li>
       </ul>
-      <Button type='button'>Login</Button>
-    </div>
+      <Button type='button'>
+        <NavLink to='/login'>Login</NavLink>
+      </Button>
+    </nav>
   );
 };

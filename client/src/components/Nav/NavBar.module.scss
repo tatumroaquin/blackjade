@@ -3,24 +3,32 @@
   background: #155555;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   padding: 0.5rem;
 
   &__links {
+    list-style: none;
     display: flex;
-    justify-content: space-between;
-    width: 30rem;
+    align-items: center;
+    gap: 1.5rem;
   }
 
   &__link {
-    list-style: none;
+    color: white;
+    text-decoration: none;
+
+    &:hover,
+    &--active {
+      color: orange;
+      text-decoration: inherit;
+    }
   }
 
   Button {
     background: darkorange;
-    color: white;
-    &:hover {
-      color: white;
+    a {
+      text-decoration: none;
+      color: black;
     }
   }
 }
