@@ -1,9 +1,19 @@
+import { FC } from 'react';
+import { useEffect } from 'react';
 import { Input } from '../components/UI/Input';
 import { Button } from '../components/UI/Button';
 import { Card } from '../components/UI/Card';
 import styles from './Login.module.scss';
 
-export const Login = () => {
+interface Login {
+  setShowNavBar: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const Login: FC<Login> = ({ setShowNavBar }) => {
+  useEffect(() => {
+    setShowNavBar(false);
+  }, []);
+
   return (
     <div className={styles['login']}>
       <Card>
@@ -23,9 +33,7 @@ export const Login = () => {
             type='password'
             placeholder='Enter Password'
           />
-          <Button type='button'>
-            Login
-          </Button>
+          <Button type='button'>Login</Button>
         </form>
       </Card>
     </div>
