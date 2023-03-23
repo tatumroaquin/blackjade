@@ -1,4 +1,6 @@
-export const DUMMY_TXPOOL = {
+import { _TransactionPool } from '../types';
+
+export const DUMMY_TXPOOL: _TransactionPool = {
   '4c1cf2ba-4275-4db6-a3bf-168e13ebc225': {
     id: '4c1cf2ba-4275-4db6-a3bf-168e13ebc225',
     input: {
