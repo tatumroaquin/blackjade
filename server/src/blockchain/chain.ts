@@ -18,6 +18,10 @@ export default class Blockchain {
     this.chain.push(newBlock);
   }
 
+  findBlock(hash: string) {
+    return this.chain.find((block) => block.matches(hash));
+  }
+
   static isValidChain(chain: Block[]): boolean {
     if (JSON.stringify(chain[0]) !== JSON.stringify(Block.getGenesis()))
       return false;
