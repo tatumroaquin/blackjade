@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from './UI/Card';
 import styles from './BlockChain.module.scss';
 
@@ -17,6 +18,7 @@ interface BlockChain {
 
 export const BlockChain: FC<BlockChain> = ({ chain }) => {
   return (
+  <div className={styles['container']}>
     <Card>
       <table className={styles['block-chain']}>
         <thead>
@@ -32,7 +34,9 @@ export const BlockChain: FC<BlockChain> = ({ chain }) => {
           {[...chain].reverse().map((block, index) => (
             <tr key={block.hash}>
               <td>{chain.length - index - 1}</td>
-              <td>{block.hash}</td>
+              <td>
+                <Link to={`/block/${block.hash}`}>{block.hash}</Link>
+              </td>
               <td>{new Date(block.timestamp).toUTCString()}</td>
               <td>{block.nonce}</td>
               <td>{block.data.length}</td>
@@ -41,5 +45,6 @@ export const BlockChain: FC<BlockChain> = ({ chain }) => {
         </tbody>
       </table>
     </Card>
+    </div>
   );
 };

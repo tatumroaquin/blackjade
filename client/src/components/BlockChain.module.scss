@@ -1,8 +1,25 @@
+$cell-border-color: green;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 1rem;
+}
+
 .block-chain {
   table-layout: auto;
   text-align: center;
   word-break: break-word;
   width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid $cell-border-color;
+    height: 2rem;
+  }
 
   th {
     color: orange;
@@ -10,5 +27,13 @@
 
   td {
     color: limegreen;
+  }
+
+  a {
+    text-decoration: none;
+    color: cyan;
+    &:visited {
+      color: magenta;
+    }
   }
 }
