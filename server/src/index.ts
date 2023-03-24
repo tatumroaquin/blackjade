@@ -33,6 +33,11 @@ app.get('/api/blocks', (_: Request, res: Response) => {
   res.json(blockchain);
 });
 
+app.get('/api/block/:hashId', (req: Request, res: Response) => {
+  const { hashId } = req.params;
+  res.json(blockchain.findBlock(hashId));
+});
+
 app.get('/api/tx-pool', (_: Request, res: Response) => {
   res.json(txpool.transactionMap);
 });
@@ -86,7 +91,7 @@ async function syncBlockchains() {
     return;
   }
   console.log(`sync chains event, fetching from root "${ROOT_NODE_ADDRESS}"`);
-  const rootChain = await response.json() as Blockchain;
+  const rootChain = (await response.json()) as Blockchain;
   blockchain.replaceChain({ blockchain: rootChain });
 }
 
