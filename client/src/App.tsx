@@ -1,34 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+import { Block } from './components/Block';
+import { BlockChain } from './components/BlockChain';
+import { Home } from './pages/Home';
+import { Login } from './pages/Login';
+import { NavBar } from './components/Nav/NavBar';
+import { Transactions } from './components/Transactions';
+import { _Block, _BlockChain } from './types';
+import { DUMMY_BLOCKCHAIN } from './dummy/BLOCKCHAIN';
+
+import './App.scss';
+
+export default function App() {
+  const { chain } = DUMMY_BLOCKCHAIN;
+  const block: _Block = chain[1];
+
+  const [showNavBar, setShowNavBar] = useState<boolean>(true);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <>
+      <Router>
+        {showNavBar && <NavBar />}
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path='/blockchain' element={<BlockChain chain={chain} />} />
+          <Route path='/block/:hashId' element={<Block />} />
+          <Route
+            path='/tx-pool'
+            element={<Transactions transactions={block.data} />}
+          />
+          <Route
+            path='/login'
+            element={<Login setShowNavBar={setShowNavBar} />}
+          />
+        </Routes>
+      </Router>
+    </>
+  );
 }
-
-export default App
