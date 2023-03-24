@@ -35,6 +35,10 @@ export default class Block {
     this.data = data;
   }
 
+  matches(hash: string) {
+    return this.hash === hash;
+  }
+
   static getGenesis() {
     return new this(GENESIS_BLOCK);
   }

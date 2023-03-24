@@ -3,7 +3,7 @@ import Block from './block.js';
 import Transaction from '../transaction/transaction.js';
 import Wallet from '../wallet/wallet.js';
 import sha256 from '../utility/sha256.js';
-import { ReplaceChainParams } from './chain.d.js';
+import { ReplaceChain } from './chain.d.js';
 
 export default class Blockchain {
   chain: Block[];
@@ -16,6 +16,10 @@ export default class Blockchain {
     const prevBlock = this.chain.slice(-1).pop()!;
     const newBlock = Block.mineBlock({ prevBlock, data });
     this.chain.push(newBlock);
+  }
+
+  findBlock(hash: string) {
+    return this.chain.find((block) => block.matches(hash));
   }
 
   static isValidChain(chain: Block[]): boolean {
@@ -41,26 +45,26 @@ export default class Blockchain {
     return true;
   }
 
-  replaceChain({ chain, skipValidation, onSuccess }: ReplaceChainParams) {
-    if (this.chain.length >= chain.length) {
+  replaceChain({ blockchain, skipValidation, onSuccess }: ReplaceChain) {
+    if (this.chain.length >= blockchain.chain.length) {
       console.error('incoming chain must be longer');
       return;
     }
 
-    if (!Blockchain.isValidChain(chain)) {
+    if (!Blockchain.isValidChain(blockchain.chain)) {
       console.error('incoming chain must be valid');
       return;
     }
 
     // to avoid validation on unit tests with invalid tx data
-    if (!skipValidation && !this.isValidTransactions(chain)) {
+    if (!skipValidation && !this.isValidTransactions(blockchain.chain)) {
       console.error('incoming chain must have valid transactions');
       return;
     }
 
     if (onSuccess) onSuccess();
 
-    this.chain = chain;
+    this.chain = blockchain.chain;
   }
 
   isValidTransactions(chain: Block[]): boolean {

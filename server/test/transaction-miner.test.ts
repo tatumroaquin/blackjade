@@ -2,9 +2,9 @@ import Blockchain from '../src/blockchain/chain.js';
 import Wallet from '../src/wallet/wallet.js';
 import TransactionPool from '../src/transaction/transaction-pool.js';
 import TransactionMiner from '../src/transaction/transaction-miner.js';
-import PubSub from '../src/pubsub.js';
+import PubSub from '../src/network/pubsub.redis.js';
 
-jest.mock('../src/pubsub.js');
+jest.mock('../src/network/pubsub.redis.js');
 
 describe('TransactionMiner', () => {
   let blockchain: Blockchain;

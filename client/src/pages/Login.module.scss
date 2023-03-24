@@ -1,0 +1,30 @@
+.login {
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 25rem;
+
+    Button {
+      align-self: center;
+    }
+  }
+
+  &__title {
+    color: #aaaaaa;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 1rem;
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .login__form {
+    width: 100%;
+  }
+}

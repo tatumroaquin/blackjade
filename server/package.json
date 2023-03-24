@@ -1,5 +1,5 @@
 {
-  "name": "blackjade",
+  "name": "blackjade-api",
   "version": "1.0.0",
   "description": "Blackjade is a peer-to-peer Blockchain, implemented in JavaScript",
   "type": "module",
@@ -13,7 +13,9 @@
     "local:peer": "npm run env-lpeer -- npm run dev",
     "global:peer": "npm run env-gpeer -- npm run dev",
     "build": "rm -rf build && tsc",
-    "start": "npm run env-prod -- node build/src/index.js"
+    "start": "npm run env-prod -- node build/src/index.js",
+    "fill-blocks": "npm run env-dev -- ts-node scripts/fill-blocks.ts",
+    "fill-txpool": "npm run env-dev -- ts-node scripts/fill-txpool.ts"
   },
   "keywords": [
     "blockchain",
@@ -41,6 +43,7 @@
     "express": "^4.18.2",
     "node-fetch": "^3.3.0",
     "pubnub": "^7.2.2",
+    "redis": "^4.6.5",
     "uuid": "^9.0.0"
   }
 }

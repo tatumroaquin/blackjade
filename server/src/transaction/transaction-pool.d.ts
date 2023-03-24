@@ -1,9 +1,9 @@
 import Transaction from './transaction.js';
 
-export type TransactionMapType = {
+export type TransactionMap = {
   [id: string]: Transaction;
 };
 
-export type HasTransactionParams = {
-    inputAddress: string;
+export type HasTransaction = {
+  inputAddress: string;
 };

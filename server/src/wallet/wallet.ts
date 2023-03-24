@@ -1,6 +1,6 @@
 import { INITIAL_BALANCE } from '../config.js';
-import { HexKeyPair, SelfVerifyParams } from './keypair.d.js';
-import { createTransactionParams, calculateBalanceParams } from './wallet.d.js';
+import { HexKeyPair, SelfVerify } from './keypair.d.js';
+import { CreateTransaction, CalculateBalance } from './wallet.d.js';
 import KeyPair from './keypair.js';
 import Transaction from '../transaction/transaction.js';
 
@@ -21,7 +21,7 @@ export default class Wallet {
     recipientAddress,
     amount,
     chain,
-  }: createTransactionParams): Transaction | undefined {
+  }: CreateTransaction): Transaction | undefined {
     if (chain) {
       this.balance = Wallet.calculateBalance({
         chain,
@@ -37,7 +37,7 @@ export default class Wallet {
     return new Transaction({ senderWallet: this, recipientAddress, amount });
   }
 
-  static calculateBalance({ chain, address }: calculateBalanceParams): number {
+  static calculateBalance({ chain, address }: CalculateBalance): number {
     let hasInputs = false;
     let outputsTotal = 0;
 
@@ -61,7 +61,7 @@ export default class Wallet {
     return this.keypair.sign(data);
   }
 
-  verify({ data, signature }: SelfVerifyParams): boolean {
+  verify({ data, signature }: SelfVerify): boolean {
     return this.keypair.verify({ data, signature });
   }
 

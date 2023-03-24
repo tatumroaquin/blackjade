@@ -1,12 +1,12 @@
 import Block from '../blockchain/block.js';
 
-export type createTransactionParams = {
+export type CreateTransaction = {
   recipientAddress: string;
   amount: number;
   chain?: Block[];
 }
 
-export type calculateBalanceParams = {
+export type CalculateBalance = {
   chain: Block[];
   address: string;
 }
