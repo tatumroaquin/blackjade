@@ -18,8 +18,15 @@ export default class Blockchain {
     this.chain.push(newBlock);
   }
 
-  findBlock(hash: string) {
-    return this.chain.find((block) => block.matches(hash));
+  findBlockByHash(hash: string) {
+    const index = this.chain.findIndex((block) => block.matches(hash));
+    const block = this.chain[index];
+    return {index, block};
+  }
+
+  findBlockByIndex(index: number) {
+    const block = this.chain[index];
+    return block;
   }
 
   static isValidChain(chain: Block[]): boolean {
