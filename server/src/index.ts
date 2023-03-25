@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import fetch from 'node-fetch';
 import Blockchain from './blockchain/chain.js';
 import PubSub from './network/pubsub.redis.js';
@@ -27,15 +27,34 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// CORS Policy
+app.use((_: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-Width, Content-Type, Accept, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, DELETE, OPTIONS'
+  );
+  next();
+});
+
 setTimeout(() => pubsub.broadcastChain(), 1000);
 
-app.get('/api/blocks', (_: Request, res: Response) => {
+app.get('/api/blockchain', (_: Request, res: Response) => {
   res.json(blockchain);
 });
 
-app.get('/api/block/:hashId', (req: Request, res: Response) => {
+app.get('/api/block/hash/:hashId', (req: Request, res: Response) => {
   const { hashId } = req.params;
-  res.json(blockchain.findBlock(hashId));
+  res.json(blockchain.findBlockByHash(hashId));
+});
+
+app.get('/api/block/index/:index', (req: Request, res: Response) => {
+  const index = parseInt(req.params.index);
+  res.json(blockchain.findBlockByIndex(index));
 });
 
 app.get('/api/tx-pool', (_: Request, res: Response) => {
@@ -44,14 +63,14 @@ app.get('/api/tx-pool', (_: Request, res: Response) => {
 
 app.get('/api/mine-txpool', (_: Request, res: Response) => {
   txminer.mineTransactions({ minerWallet: wallet });
-  res.redirect('/api/blocks');
+  res.redirect('/api/blockchain');
 });
 
 app.post('/api/mine-block', (req: Request, res: Response) => {
   const { data } = req.body;
   blockchain.addBlock({ data });
   pubsub.broadcastChain();
-  res.redirect('/api/blocks');
+  res.redirect('/api/blockchain');
 });
 
 app.post('/api/transact', (req: Request, res: Response) => {
@@ -85,7 +104,7 @@ app.post('/api/transact', (req: Request, res: Response) => {
 });
 
 async function syncBlockchains() {
-  const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blocks`);
+  const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blockchain`);
   if (!response.ok || response.type === 'error') {
     console.log('error fetching root node blockchain');
     return;
