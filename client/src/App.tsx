@@ -24,8 +24,8 @@ export default function App() {
         {showNavBar && <NavBar />}
         <Routes>
           <Route index element={<Home />} />
-          <Route path='/blockchain' element={<BlockChain chain={chain} />} />
           <Route path='/block/:hashId' element={<Block />} />
+          <Route path='/blockchain' element={<BlockChain chain={chain} />} />
           <Route
             path='/tx-pool'
             element={<Transactions transactions={block.data} />}
