@@ -16,13 +16,22 @@ const GENESIS_BLOCK = {
   timestamp: 1674971522141,
   prevHash: 'ORIGIN',
   hash: 'GENESIS-HASH',
+  nonce: 0,
+  difficulty: 3,
   data: [
     {
       id: 'GENESIS-TXID',
+      input: {
+        timestamp: 16749715222145,
+        wallet: 'GENESIS-WALLET',
+        amount: 25,
+        signature: 'GENESIS-SIGNATURE',
+      },
+      output: {
+        'GENESIS-WALLET': 25,
+      },
     },
   ],
-  nonce: 0,
-  difficulty: DIFFICULTY,
 };
 
 const NODE_ID: string = uuid();
