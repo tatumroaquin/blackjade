@@ -7,17 +7,19 @@ import Transaction from '../src/transaction/transaction.js';
 
 const URL = process.env.ROOT_NODE_ADDRESS!;
 
-function POST(url: string, data: object) {
-  (async () => {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    return await response.json();
-  })();
+async function POST(url: string, data: object) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok || response.type === 'error')
+    return;
+
+  return response.json();
 }
 
 function randomInt(min: number, max: number) {
@@ -43,7 +45,7 @@ async function conductTransaction(count: number) {
 
   let message = genTransaction();
 
-  POST(`${URL}/api/transact`, message);
+  await POST(`${URL}/api/transact`, message);
   console.log('MESSAGE: ', message);
   await sleep(1);
   await conductTransaction(count - 1);
