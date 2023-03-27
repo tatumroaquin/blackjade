@@ -36,8 +36,9 @@ describe('Blockchain', () => {
 
     describe('block 0 is NOT the genesis block', () => {
       it('returns false', () => {
-        let genesis = blockchain.chain[0];
-        blockchain.chain[0] = { ...genesis, data: 'fake genesis' };
+        let genesis = Block.getGenesis();
+        genesis.data = 'fake genesis data';
+        blockchain.chain[0] = genesis;
         expect(Blockchain.isValidChain(blockchain.chain)).toBe(false);
       });
     });
