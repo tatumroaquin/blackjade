@@ -8,7 +8,7 @@
     "env-dev": "ts-node scripts/env-dev.ts",
     "env-lpeer": "ts-node scripts/env-local-peer.ts",
     "env-gpeer": "ts-node scripts/env-global-peer.ts",
-    "test": "jest --detectOpenHandles",
+    "test": "jest --detectOpenHandles --watch",
     "dev": "npm run env-dev -- nodemon --exec ts-node src/index.ts",
     "local:peer": "npm run env-lpeer -- npm run dev",
     "global:peer": "npm run env-gpeer -- npm run dev",
