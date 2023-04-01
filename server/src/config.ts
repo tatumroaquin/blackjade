@@ -18,6 +18,7 @@ const GENESIS_BLOCK = {
   hash: 'GENESIS-HASH',
   nonce: 0,
   difficulty: 3,
+  height: 0,
   data: [
     {
       id: 'GENESIS-TXID',

@@ -31,6 +31,7 @@ export interface _Block {
   hash: string;
   nonce: number;
   difficulty: number;
+  height: number;
   data: _Transaction[];
 }
 
