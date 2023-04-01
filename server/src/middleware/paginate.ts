@@ -5,11 +5,11 @@ interface Page {
   limit: number;
 }
 
-export function paginate(modelName: string) {
+export function paginate(modelName: string, reverse?: boolean) {
   return (req: Request, res: Response, next: NextFunction) => {
     let model;
 
-    switch(modelName) {
+    switch (modelName) {
       case 'blockchain':
         model = req.app.locals[modelName].chain;
         break;
@@ -21,14 +21,21 @@ export function paginate(modelName: string) {
     const page = +req.query.page! || 1;
     const limit = +req.query.limit! || model.length;
 
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+    let startIndex = (page - 1) * limit;
+    let endIndex = page * limit;
+
+    if (reverse) {
+      startIndex = model.length - startIndex;
+      endIndex = -1 * endIndex;
+      [startIndex, endIndex] = [endIndex, startIndex];
+    }
 
     const result: {
       prev?: Page;
       next?: Page;
       data?: Array<object>;
-    } = {};
+      total: number;
+    } = { total: 0 };
 
     if (startIndex > 1) {
       result.prev = { page: page - 1, limit };
@@ -38,9 +45,8 @@ export function paginate(modelName: string) {
       result.next = { page: page + 1, limit };
     }
 
-    if (model.length > 0) {
-      result.data = model.slice(startIndex, endIndex);
-    }
+    result.data = model.slice(startIndex, endIndex);
+    result.total = model.length;
 
     res.locals.result = result;
     next();
