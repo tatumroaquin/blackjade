@@ -3,7 +3,7 @@ import { paginate } from '../middleware/paginate.js';
 
 const router = Router();
 
-router.get('/blockchain', paginate('blockchain'), (req: Request, res: Response) => {
+router.get('/blockchain', paginate('blockchain', true), (_: Request, res: Response) => {
   res.json(res.locals.result)
 });
 
