@@ -2,7 +2,9 @@ import { FC, useEffect, useState } from 'react';
 import { useHttp } from '../hooks/use-http';
 import { Link } from 'react-router-dom';
 import { Card } from './UI/Card';
+import { Pagination } from './UI/Pagination';
 import { _Block, _BlockChain } from '../types';
+import classnames from 'classnames';
 import styles from './BlockChain.module.scss';
 
 interface Block {
@@ -11,6 +13,7 @@ interface Block {
   hash: string;
   nonce: number;
   difficulty: number;
+  height: number;
   data: any;
 }
 
@@ -18,8 +21,12 @@ interface BlockChain {
   chain: Array<Block>;
 }
 
+let pageLimit = 5;
+
 export const BlockChain: FC<BlockChain> = ({ chain }) => {
-  const [blockchain, setBlockchain] = useState<_BlockChain>();
+  const [blockchain, setBlockchain] = useState<_BlockChain>({ chain: [] });
+  const [chainLength, setChainLength] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const { sendRequest, isLoading, error, clearError } = useHttp();
 
   useEffect(() => {
@@ -27,14 +34,15 @@ export const BlockChain: FC<BlockChain> = ({ chain }) => {
 
     (async () => {
       try {
-        const data = await sendRequest({
-          url: 'http://localhost:3000/api/blockchain',
+        const result = await sendRequest({
+          url: `http://localhost:3000/api/blockchain?limit=${pageLimit}&page=${currentPage}`,
           abortController,
         });
-        setBlockchain(data);
+        setBlockchain({ chain: result.data });
+        setChainLength(result.total);
       } catch (error) {}
     })();
-  }, [sendRequest]);
+  }, [currentPage]);
 
   return (
     <div className={styles['container']}>
@@ -51,9 +59,9 @@ export const BlockChain: FC<BlockChain> = ({ chain }) => {
           </thead>
           <tbody>
             {blockchain &&
-              [...blockchain.chain].reverse().map((block, index) => (
+              [...blockchain.chain].reverse().map((block) => (
                 <tr key={block.hash}>
-                  <td>{chain.length - index - 1}</td>
+                  <td>{block.height}</td>
                   <td>
                     <Link to={`/block/${block.hash}`}>{block.hash}</Link>
                   </td>
@@ -65,6 +73,13 @@ export const BlockChain: FC<BlockChain> = ({ chain }) => {
           </tbody>
         </table>
       </Card>
+        <Pagination
+          dataLength={chainLength}
+          currentPage={currentPage}
+          pageLimit={pageLimit}
+          onPageChange={setCurrentPage}
+          className={styles['pagination-bar']}
+        />
     </div>
   );
 };
