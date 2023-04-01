@@ -64,7 +64,6 @@ async function syncBlockchains() {
   const paginatedResults = (await response.json()) as { data: Block[] };
   const rootChain = new Blockchain();
   rootChain.chain = paginatedResults.data;
-  console.log(rootChain);
   app.locals.blockchain.replaceChain({ blockchain: rootChain });
 }
 
