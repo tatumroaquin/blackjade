@@ -37,7 +37,7 @@ function sleep(seconds: number) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
 
-mineBlocks(20);
+mineBlocks(23);
 async function mineBlocks(count: number) {
   if (count === 0) return;
 
