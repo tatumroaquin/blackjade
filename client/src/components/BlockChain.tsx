@@ -21,7 +21,7 @@ interface BlockChain {
   chain: Array<Block>;
 }
 
-let pageLimit = 5;
+let pageLimit = 10;
 
 export const BlockChain: FC<BlockChain> = ({ chain }) => {
   const [blockchain, setBlockchain] = useState<_BlockChain>({ chain: [] });
