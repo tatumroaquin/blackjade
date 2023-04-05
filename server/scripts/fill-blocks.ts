@@ -7,17 +7,16 @@ import Transaction from '../src/transaction/transaction.js';
 
 const URL = process.env.ROOT_NODE_ADDRESS!;
 
-function POST(url: string, data: object) {
-  (async () => {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    return await response.json();
-  })();
+async function POST(url: string, data: object) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok || response.type === 'error') return;
 }
 
 function randomInt(min: number, max: number) {
@@ -34,7 +33,11 @@ function genTransaction(): Transaction {
   })!;
 }
 
-await mineBlocks(20);
+function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}
+
+mineBlocks(23);
 async function mineBlocks(count: number) {
   if (count === 0) return;
 
@@ -45,7 +48,7 @@ async function mineBlocks(count: number) {
   transactions.push(Transaction.rewardMiner({ minerWallet: new Wallet() }));
   const message = { data: transactions };
 
-  POST(`${URL}/api/mine-block`, message)
-  console.log('MESSAGE: ', message);
+  await POST(`${URL}/api/mine-block`, message);
+  console.log('MESSAGE:', message);
   await mineBlocks(count - 1);
 }

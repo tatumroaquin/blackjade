@@ -1,5 +1,6 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import fetch from 'node-fetch';
+import Block from './blockchain/block.js';
 import Blockchain from './blockchain/chain.js';
 import PubSub from './network/pubsub.redis.js';
 import Wallet from './wallet/wallet.js';
@@ -8,18 +9,9 @@ import TransactionMiner from './transaction/transaction-miner.js';
 import { TransactionMap } from './transaction/transaction-pool.d.js';
 import { NODE_ID } from './config.js';
 
-const blockchain = new Blockchain();
-
-const txpool = new TransactionPool();
-const wallet = new Wallet();
-
-const pubsub = new PubSub({ blockchain, txpool });
-
-const txminer = new TransactionMiner({
-  blockchain,
-  txpool,
-  pubsub,
-});
+import blockchainRouter from './router/blockchain.js';
+import miningRouter from './router/mining.js';
+import transactionRouter from './router/transaction.js';
 
 const { ROOT_NODE_ADDRESS } = process.env;
 
@@ -27,72 +19,52 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-setTimeout(() => pubsub.broadcastChain(), 1000);
-
-app.get('/api/blocks', (_: Request, res: Response) => {
-  res.json(blockchain);
+// CORS Policy
+app.use((_: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-Width, Content-Type, Accept, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, DELETE, OPTIONS'
+  );
+  next();
 });
 
-app.get('/api/block/:hashId', (req: Request, res: Response) => {
-  const { hashId } = req.params;
-  res.json(blockchain.findBlock(hashId));
+app.locals.blockchain = new Blockchain();
+app.locals.txpool = new TransactionPool();
+app.locals.wallet = new Wallet();
+
+app.locals.pubsub = new PubSub({
+  blockchain: app.locals.blockchain,
+  txpool: app.locals.txpool,
 });
 
-app.get('/api/tx-pool', (_: Request, res: Response) => {
-  res.json(txpool.transactionMap);
+app.locals.txminer = new TransactionMiner({
+  blockchain: app.locals.blockchain,
+  txpool: app.locals.txpool,
+  pubsub: app.locals.pubsub,
 });
 
-app.get('/api/mine-txpool', (_: Request, res: Response) => {
-  txminer.mineTransactions({ minerWallet: wallet });
-  res.redirect('/api/blocks');
-});
+setTimeout(() => app.locals.pubsub.broadcastChain(), 1000);
 
-app.post('/api/mine-block', (req: Request, res: Response) => {
-  const { data } = req.body;
-  blockchain.addBlock({ data });
-  pubsub.broadcastChain();
-  res.redirect('/api/blocks');
-});
-
-app.post('/api/transact', (req: Request, res: Response) => {
-  const { recipientAddress, amount } = req.body;
-  console.log(recipientAddress, amount);
-
-  let transaction = txpool.getExistingTransaction({
-    inputAddress: wallet.getPublicKey(),
-  });
-
-  try {
-    if (transaction) {
-      transaction.update({
-        senderWallet: wallet,
-        recipientAddress,
-        amount,
-      });
-    } else {
-      transaction = wallet.createTransaction({
-        recipientAddress,
-        amount,
-      });
-    }
-  } catch (error: any) {
-    res.status(400);
-    res.json({ type: 'error', message: error.message });
-  }
-  txpool.addTransaction(transaction!);
-  pubsub.broadcastTransaction(transaction!);
-  res.json({ type: 'success', transaction });
-});
+app.use('/api', blockchainRouter);
+app.use('/api', miningRouter);
+app.use('/api', transactionRouter);
 
 async function syncBlockchains() {
-  const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blocks`);
+  const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blockchain`);
   if (!response.ok || response.type === 'error') {
     console.log('error fetching root node blockchain');
     return;
   }
   console.log(`sync chains event, fetching from root "${ROOT_NODE_ADDRESS}"`);
-  const rootChain = (await response.json()) as Blockchain;
-  blockchain.replaceChain({ blockchain: rootChain });
+  const paginatedResults = (await response.json()) as { data: Block[] };
+  const rootChain = new Blockchain();
+  rootChain.chain = paginatedResults.data;
+  app.locals.blockchain.replaceChain({ blockchain: rootChain });
 }
 
 async function syncTransactionPool() {
@@ -103,7 +75,7 @@ async function syncTransactionPool() {
   }
 
   const rootTxPool = (await response.json()) as TransactionMap;
-  txpool.setTransactionMap(rootTxPool);
+  app.locals.txpool.setTransactionMap(rootTxPool);
   console.log(`sync tx-pool event, fetching from root "${ROOT_NODE_ADDRESS}"`);
 }
 

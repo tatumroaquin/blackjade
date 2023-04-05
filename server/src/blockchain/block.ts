@@ -8,6 +8,7 @@ interface BlockParams {
   hash: string;
   nonce: number;
   difficulty: number;
+  height: number;
   data: any;
 }
 
@@ -17,6 +18,7 @@ export default class Block {
   hash: string;
   nonce: number;
   difficulty: number;
+  height: number;
   data: any;
 
   constructor({
@@ -25,6 +27,7 @@ export default class Block {
     hash,
     nonce,
     difficulty,
+    height,
     data,
   }: BlockParams) {
     this.timestamp = timestamp;
@@ -32,6 +35,7 @@ export default class Block {
     this.hash = hash;
     this.nonce = nonce;
     this.difficulty = difficulty;
+    this.height = height;
     this.data = data;
   }
 
@@ -45,6 +49,7 @@ export default class Block {
 
   static mineBlock({ prevBlock, data }: { prevBlock: Block; data: any }) {
     const prevHash = prevBlock.hash;
+    const height = prevBlock.height + 1;
     let { difficulty } = prevBlock;
     let timestamp,
       hash,
@@ -59,7 +64,7 @@ export default class Block {
       hexToBin(hash).substring(0, difficulty) !== '0'.repeat(difficulty)
     );
 
-    return new this({ timestamp, prevHash, hash, nonce, difficulty, data });
+    return new this({ timestamp, prevHash, hash, nonce, difficulty, height, data });
   }
 
   static adjustDifficulty({

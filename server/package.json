@@ -8,8 +8,8 @@
     "env-dev": "ts-node scripts/env-dev.ts",
     "env-lpeer": "ts-node scripts/env-local-peer.ts",
     "env-gpeer": "ts-node scripts/env-global-peer.ts",
-    "test": "jest --detectOpenHandles",
-    "dev": "npm run env-dev -- ts-node src/index.ts",
+    "test": "jest --detectOpenHandles --watch",
+    "dev": "npm run env-dev -- nodemon --exec ts-node src/index.ts",
     "local:peer": "npm run env-lpeer -- npm run dev",
     "global:peer": "npm run env-gpeer -- npm run dev",
     "build": "rm -rf build && tsc",
@@ -34,6 +34,7 @@
     "@types/pubnub": "^7.2.1",
     "@types/uuid": "^9.0.0",
     "jest": "^29.4.3",
+    "nodemon": "^2.0.22",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
