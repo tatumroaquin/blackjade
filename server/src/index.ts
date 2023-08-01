@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 import fetch from 'node-fetch';
 import Block from './blockchain/block.js';
 import Blockchain from './blockchain/chain.js';
@@ -12,6 +13,7 @@ import { NODE_ID } from './config.js';
 import blockchainRouter from './router/blockchain.js';
 import miningRouter from './router/mining.js';
 import transactionRouter from './router/transaction.js';
+import authenticationRouter from './router/authenticate.js';
 
 const { ROOT_NODE_ADDRESS } = process.env;
 
@@ -33,6 +35,11 @@ app.use((_: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+mongoose
+  .connect(process.env.MONGODB_URI || '')
+  .then(() => console.log('mongodb connected'))
+  .catch((error) => console.log(error));
+
 app.locals.blockchain = new Blockchain();
 app.locals.txpool = new TransactionPool();
 app.locals.wallet = new Wallet();
@@ -53,6 +60,7 @@ setTimeout(() => app.locals.pubsub.broadcastChain(), 1000);
 app.use('/api', blockchainRouter);
 app.use('/api', miningRouter);
 app.use('/api', transactionRouter);
+app.use('/api', authenticationRouter);
 
 async function syncBlockchains() {
   const response = await fetch(`${ROOT_NODE_ADDRESS}/api/blockchain`);
